@@ -1,8 +1,10 @@
 
+<h2>Every Single Month Generator</h2>
+<p>Type in the name of a city or town, and then click 'Generate'. Or <a href="index.php?action=gallery">browse existing memes</a>.</p>
 <form action="index.php">
 
     <input type="hidden" name="action" value="process" />
-    <input type="text" name="city" placeholder="City or town" id="name_input" list="huge_list" value="{CITY}" />
+    <input type="text" size="35" name="city" placeholder="City or town" id="name_input" list="huge_list" value="{CITY}" />
     <datalist id="huge_list">
     </datalist>
     <input type="submit" value="Generate" />

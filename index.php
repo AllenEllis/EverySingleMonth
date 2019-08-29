@@ -152,7 +152,7 @@ if($action =='png') {
     // todo check to see if image exists first
     if(!file_exists($path)) {
         // todo so much user sanitization it's not even funny
-        exec("/usr/bin/node screenshot.js $url $path", $output);
+        exec("/usr/bin/node screenshot.js " . escapeshellarg($url) . " " . escapeshellarg($path), $output);
         //echo implode("\n", $output);
     }
 
@@ -160,6 +160,47 @@ if($action =='png') {
     echo "PNG saved to: <a href='$pngpath'>$pngpath</a><hr />
    <a href='$pngpath'><img src='$pngpath' width='1080' height='1080' /></a>";
 
+}
+
+
+if($action == 'gallery') {
+
+    echo "<h3>Existing images</h3>";
+    echo "<p>Browse through existing images that other users have generated.</p>";
+    echo "<p><a href='index.php'>Go back</a></p>";
+    $files = getDirContents("exports/png");
+    foreach($files as $file) {
+        $url = $baseURI . "/" . $file;
+        echo <<<END
+<div class="thumbnail">
+    <a href="$url">
+        <img src="$url" style="width: 256px; height: 256px; float: left" />
+    </a>
+</div>
+END;
+
+    }
+}
+
+
+function getDirContents($dir, &$results = array()){
+    $files = scandir($dir);
+
+    foreach($files as $key => $value){
+        $path = realpath($dir.DIRECTORY_SEPARATOR.$value);
+        $fakepath = $dir.DIRECTORY_SEPARATOR.$value;
+        $ext = pathinfo($value, PATHINFO_EXTENSION);
+        if($ext != 'png') continue;
+
+        if(!is_dir($path)) {
+            $results[] = $fakepath;
+        } else if($value != "." && $value != "..") {
+            getDirContents($path, $results);
+            $results[] = $fakepath;
+        }
+    }
+
+    return $results;
 }
 
 
@@ -237,7 +278,11 @@ function getAPIresult($service, $city) {
 */
 
 function hash_image($image) {
-    return substr(md5($image),0,6);
+
+    $image = urldecode($image);
+    $out = substr(md5($image),0,6);
+    //echo "I took $image and made $out";
+    return $out;
 }
 
 function write_html($data) {
@@ -298,7 +343,6 @@ window.onload = function pngCall(){
                 }
             }
             objXMLHttpRequest.open('GET', 'index.php?action=png&city=$city&src=$src');
-            //objXMLHttpRequest.open('GET', 'http://10.10.0.90/everysinglemonth/README.md');
             objXMLHttpRequest.send();
 
         }
