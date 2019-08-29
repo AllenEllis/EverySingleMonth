@@ -1,0 +1,255 @@
+<html>
+
+
+<head>
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,500i,700&display=swap" rel="stylesheet">
+
+    <style type="text/css">
+
+        html {
+
+        }
+
+        body{
+            margin: 0;
+            padding: 0;
+            color: white;
+            font-family: Montserrat, sans-serif;
+        }
+
+        .meme, #highlights, #shadows, #bg-image, #legibility {
+            position: absolute;
+            width: 1080px;
+            height: 1080px;
+            top: 0;
+            left: 0;
+        }
+
+        #meta {
+            width: 700px;
+            background: #002d72;
+            position: absolute;
+            top: 40px;
+            margin-left: auto;
+            margin-right: auto;
+            left: 0;
+            right: 0;
+        }
+
+        #meta h1 {
+            font-size: 47px;
+            width: 100%;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .stat {
+            width: 33.3%;
+            text-align: center;
+            float: left;
+            padding-bottom: 22px;
+        }
+
+        .stat h4 {
+            margin-top: 0;
+            margin-bottom: -5px;
+            color: #e6e6e6;
+            font-weight: normal;
+            font-size: 18.5px;
+        }
+
+        .stat strong {
+            font-weight: bold;
+            font-size: 42px;
+        }
+
+        #main {
+            position: absolute;
+            margin-left: auto;
+            margin-right: auto;
+            top: 360px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 55px;
+
+
+        }
+
+        .underline {
+          /*  outline: 36px solid #da3248;
+            outline-offset: -10px*/
+/*
+            border: 20px solid #da3248;
+            box-shadow: inset 0px 0px 0px 10px red;
+            box-sizing: border-box;*/
+        }
+
+        #line2 #underline {
+            border-bottom: 36px solid #da3248;
+            top: -32px;
+            position: relative;
+        }
+
+        #line2 #underline strong {
+            top: 32px;
+            position: relative;
+            margin-left: 4px;
+            margin-right: 4px;
+        }
+
+        #line3 {
+            font-size: 90px;
+            font-weight: bold;
+        }
+
+        #line4, #line5 {
+            font-size: 50px;
+        }
+
+        #line5 {
+            margin-top: -5px;
+        }
+
+        #line5 i { color: #da3248 }
+
+        .meme#outer-wrap {
+            width: 1080px;
+            height: 1080px;
+            outline: 40px solid #002d72;
+            outline-offset: -40px;
+        }
+
+        #footer {
+            position: absolute;
+            bottom: 75px;
+            width: 80%;
+            font-size: 25px;
+            font-weight: 400;
+            left: 0;
+            right: 0;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #footer .fact {
+            width: 33.3%;
+            float: left;
+            height: 62px;
+            vertical-align: middle;
+        }
+
+        #footer1 { text-align: left; }
+        #footer2 { text-align: center; }
+        #footer3 { text-align: right; }
+
+        #footer .fact span {
+            padding-top: 15px;
+            display:block;
+        }
+
+        #footer3 img {
+            width: 127px;
+            height: auto;
+        }
+
+        #bg-image {
+            background-image: url("{IMAGE}");
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+        }
+
+        #highlights {
+            background-color: #da9d32;
+            mix-blend-mode: multiply;
+        }
+
+        #shadows {
+            background-color: #002d72;
+            mix-blend-mode: lighten;
+        }
+
+        #legibility {
+            background-image: url("{LOGOURL}");
+            opacity: .3;
+        }
+
+    </style>
+</head>
+
+
+
+
+
+<body>
+
+<div class="meme" id="outer-wrap">
+
+    <div id="meta">
+        <h1>{TOWN_FULL}</h1>
+        <div id="stat1" class="stat">
+            <h4>Adult population</h4>
+            <strong>{POP}</strong>
+        </div>
+        <div id="stat2" class="stat">
+            <h4>Median income</h4>
+            <strong>{INCOME}</strong>
+        </div>
+        <div id="stat3" class="stat">
+            <h4>Poverty</h4>
+            <strong>{POVERTY}</strong>
+        </div>
+    </div>
+
+    <div id="main">
+        <div id="line1">
+            By giving every adult <strong>$1,000</strong>,
+        </div>
+        <div id="line2">
+            <span id="underline"><strong>Andrew Yang</strong></span>
+             wants to invest
+        </div>
+        <div id="line3">
+            <strong>{TOTAL}</strong>
+        </div>
+        <div id="line4">
+            into {TOWN_SHORT}
+        </div>
+        <div id="line5">
+            <em>every single month</em><i>.</i>
+        </div>
+    </div>
+
+    <div id="footer">
+        <div id="footer1" class="fact"><span>yang2020.com</span></div>
+        <div id="footer2" class="fact"><span>#FreedomDividend</span></div>
+        <div id="footer3" class="fact"><img src="{LOGOURL}" /></div>
+    </div>
+
+
+
+    <div id="#">
+        <div id="exposure">
+            <div id="bg-image" style="">&nbsp;
+
+                <div id="highlights">Highlights now here
+                    <div id="legibility">&nbsp;</div>
+                </div>
+                <div id="shadows">Shadows now here</div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+
+
+
+
+
+</html>

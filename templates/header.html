@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Every Single Month</title>
+    <style type="text/css">
+
+        div.thumbnail {
+            width:250px;
+            height: 250px;
+            float: left;
+
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    </style>
+    <script type="text/javascript">
+
+        window.onload = function googleCall(){
+
+
+            // ajax update for Google image loading
+            var objXMLHttpRequest = new XMLHttpRequest();
+            var googleContainer = document.getElementById("google-container");
+            objXMLHttpRequest.onreadystatechange = function() {
+                if(objXMLHttpRequest.readyState === 4) {
+                    if(objXMLHttpRequest.status === 200) {
+                        //alert(objXMLHttpRequest.responseText);
+                        googleContainer.innerHTML = objXMLHttpRequest.responseText;
+                    } else {
+                        //alert('Error Code: ' +  objXMLHttpRequest.status);
+                        //alert('Error Message: ' + objXMLHttpRequest.statusText);
+
+                        googleContainer.innerHTML = 'Error Code: ' +  objXMLHttpRequest.status + 'Error Message: ' + objXMLHttpRequest.statusText;
+                    }
+                }
+            }
+            objXMLHttpRequest.open('GET', 'index.php?action=google&city={CITY}');
+            objXMLHttpRequest.send();
+
+        }
+
+
+        function updateBG(imgSrc) {
+            var iframe = document.getElementById("meme-iframe");
+            var bgimage = iframe.contentWindow.document.getElementById("bg-image");
+            var formsrc = document.getElementById("formsrc");
+            bgimage.style.backgroundImage = 'url('+imgSrc+')';
+            formsrc.value = imgSrc;
+            return Promise.resolve("Dummy response to keep the console quiet");
+        }
+
+        function updateBGUser(imgSrc) {
+
+        }
+
+
+
+        // #bg-image - needs its background-image property updated
+    </script>
+</head>
+<body>
