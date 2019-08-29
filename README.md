@@ -4,6 +4,8 @@ This is a simple little web app to allow users to input the name of a city, and 
 ## Requirements
  - A web server running PHP with the `curl` module installed.
  - An account with [zenserp](https://zenserp.com/) if you want the Google Search results to work.
+ - If you want the screenshot function to work, [install Puppeteer](https://developers.google.com/web/tools/puppeteer/get-started#installation).
+    - Puppeteer has plenty of its own dependencies, including node and chromium, and some `x` drivers for headless systems.
 
 ## Installation
 1. Clone the repository
