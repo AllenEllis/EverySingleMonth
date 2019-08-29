@@ -149,13 +149,16 @@ if($action =='png') {
     echo "<hr />";
 */
 
-    // todo so much user sanitization it's not even funny
-    exec("/usr/bin/node screenshot.js $url $path", $output);
-    //echo implode("\n", $output);
+    // todo check to see if image exists first
+    if(!file_exists($path)) {
+        // todo so much user sanitization it's not even funny
+        exec("/usr/bin/node screenshot.js $url $path", $output);
+        //echo implode("\n", $output);
+    }
 
-    $pngpath = $baseURI . "/" . $pngpath;
+    $pngpath = $baseURI . "/" . $path;
     echo "PNG saved to: <a href='$pngpath'>$pngpath</a><hr />
-   <img src='$pngpath' width='1080' height='1080' />";
+   <a href='$pngpath'><img src='$pngpath' width='1080' height='1080' /></a>";
 
 }
 
