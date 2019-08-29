@@ -16,6 +16,11 @@ const puppeteer = require('puppeteer');
     //});
     //const browser = await puppeteer.launch({executablePath: '/usr/bin/chromium-browser'});
     const page = await browser.newPage();
+    await page.setViewport({
+        width: 1080,
+        height: 1080,
+        deviceScaleFactor: 1,
+    });
     await page.goto(url);
     await page.screenshot({path: path});
 

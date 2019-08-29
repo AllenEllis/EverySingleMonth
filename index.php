@@ -143,16 +143,19 @@ if($action =='png') {
     $url = $baseURI . "/exports/html/" . $city . "_" . $hash . ".html";
     $path = "exports/png/" . $city . "_" . $hash . ".png";
 
-    echo $url;
+    /*echo $url;
     echo "<hr />";
     echo $path;
     echo "<hr />";
-
+*/
 
     // todo so much user sanitization it's not even funny
     exec("/usr/bin/node screenshot.js $url $path", $output);
-    echo implode("\n", $output);
+    //echo implode("\n", $output);
 
+    $pngpath = $baseURI . "/" . $pngpath;
+    echo "PNG saved to: <a href='$pngpath'>$pngpath</a><hr />
+   <img src='$pngpath' width='1080' height='1080' />";
 
 }
 
