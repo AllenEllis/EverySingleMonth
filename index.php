@@ -118,8 +118,11 @@ if($action =='write') {
     $data = get_data($city);
     if(!$data) return "Sorry that is not a valid request.";
     $data['image'] = $_GET['src'];
+    $src = $_GET['src'];
 
-    write_html($data);
+    $path = write_html($data);
+    write_png($data);
+
 
 }
 
@@ -127,6 +130,30 @@ if($action == 'debug') {
     $city = $_GET['city']; //todo: sanitize input
     $data = get_data($city);
     var_dump($data);
+}
+
+if($action =='png') {
+
+    $city = $_GET['city'];
+    $src = $_GET['src'];
+    $hash = hash_image($src);
+
+    global $baseURI;
+
+    $url = $baseURI . "/exports/html/" . $city . "_" . $hash . ".html";
+    $path = "exports/png/" . $city . "_" . $hash . ".png";
+
+    echo $url;
+    echo "<hr />";
+    echo $path;
+    echo "<hr />";
+
+
+    // todo so much user sanitization it's not even funny
+    exec("/usr/bin/node screenshot.js $url $path", $output);
+    echo implode("\n", $output);
+
+
 }
 
 
@@ -197,75 +224,83 @@ function getAPIresult($service, $city) {
 //echo generate_html($data);
 //write_html($data);
 
-if($action == "jpg") {
+/*if($action == "jpg") {
     $id = 40668;
     write_jpg($id);
 }
+*/
 
+function hash_image($image) {
+    return substr(md5($image),0,6);
+}
 
 function write_html($data) {
-
-    $filepath = "exports/html/".$data['id'].".html";
-    $html =  generate_html($data);
-echo $html;
-    //file_put_contents($filepath,$html) or die("Failed to write output");
-
-    //echo "Rendered output sucessfully to " . $filepath;
-
-
-}
-
-
-
-function write_jpg($id) {
-    // Use the first autoload instead if you don't want to install composer
-
-    $url = "exports/html/" . $id;
-    $w = '1080';
-    $h = '1080';
-    $format = 'jpg';
-
-    require_once 'vendor/autoload.php';
-    if (!isset($url)) {
-        exit;
-    }
-    $screen = new Screen\Capture($url);
-    if (isset($_GET['w'])) { // Width
-        $screen->setWidth(intval($w));
-    }
-    if (isset($_GET['h'])) { // Height
-        $screen->setHeight(intval($h));
-    }
-   /* if (isset($_GET['clipw'])) { // Clip Width
-        $screen->setClipWidth(intval($_GET['clipw']));
-    }
-    if (isset($_GET['cliph'])) { // Clip Height
-        $screen->setClipHeight(intval($_GET['cliph']));
-    }
-    if (isset($_GET['user-agent'])) { // User Agent String
-        $screen->setUserAgentString($_GET['user-agent']);
-    }
-    if (isset($_GET['bg-color'])) { // Background Color
-        $screen->setBackgroundColor($_GET['bg-color']);
-    }*/
-    if (isset($format)) { // Format
-        $screen->setImageType($format);
-    }
-
+    if(!isset($data)) return false;
     global $baseURI;
-    $fileLocation = $baseURI . 'exports/html/'.$id.".html";
-    //echo file_get_contents($fileLocation);die;
-    $screen->save($fileLocation);
-    header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
-    header("Pragma: no-cache"); // HTTP 1.0.
-    header("Expires: 0"); // Proxies.
-    header('Content-Type:' . $screen->getImageType()->getMimeType());
-    header('Content-Length: ' . filesize($screen->getImageLocation()));
-    readfile($screen->getImageLocation());
+    $data['image'] = $_GET['src']; // todo: sanatize input
+    $data['imagehash'] = hash_image($data['image']);
+    $data['path'] = "exports/html/".$data['id']."_".$data['imagehash'].".html";
+
+    if(file_exists($data['path'])) {
+        echo "File exists at <a href='$baseURI/".$data['path']."'>" . $data['path']."</a>";
+        return $data['path'];
+    }
+    $html =  generate_html($data);
+
+    file_put_contents($data['path'],$html) or die("Failed to write output");
+    echo "Rendered output successfully to <a href='$baseURI/".$data['path']."'>" . $data['path']."</a>";
+
+
+
+    return $data['path'];
+
+
 }
 
 
 
+function write_png($data)
+{
+    $spinner = file_get_contents("templates/spinner.html");
+    echo "<h3>Generating PNG</h3>";
+    echo "<div id='png-result'>Please wait...$spinner</div>";
+
+    $city = $_GET['city'];
+    $src = $_GET['src'];
+
+
+    echo <<<END
+
+<script>
+window.onload = function pngCall(){
+
+
+            // ajax update for Google image loading
+            var objXMLHttpRequest = new XMLHttpRequest();
+            var googleContainer = document.getElementById("png-result");
+            objXMLHttpRequest.onreadystatechange = function() {
+                if(objXMLHttpRequest.readyState === 4) {
+                    if(objXMLHttpRequest.status === 200) {
+                        //alert(objXMLHttpRequest.responseText);
+                        googleContainer.innerHTML = objXMLHttpRequest.responseText;
+                    } else {
+                        //alert('Error Code: ' +  objXMLHttpRequest.status);
+                        //alert('Error Message: ' + objXMLHttpRequest.statusText);
+
+                        googleContainer.innerHTML = 'Error Code: ' +  objXMLHttpRequest.status + 'Error Message: ' + objXMLHttpRequest.statusText;
+                    }
+                }
+            }
+            objXMLHttpRequest.open('GET', 'index.php?action=png&city=$city&src=$src');
+            //objXMLHttpRequest.open('GET', 'http://10.10.0.90/everysinglemonth/README.md');
+            objXMLHttpRequest.send();
+
+        }
+</script>
+
+END;
+
+}
 
 
 

@@ -1,10 +1,23 @@
 const puppeteer = require('puppeteer');
 
-(async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto('https://example.com');
-  await page.screenshot({path: 'example.png'});
 
-  await browser.close();
+
+
+(async () => {
+
+    'use strict';
+    const url = process.argv[2];
+    const path = process.argv[3];
+
+    const browser = await puppeteer.launch();
+    //const browser = await puppeteer.launch({ executablePath: 'chrome.exe' });
+    //const browser = await puppeteer.launch({
+    //    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    //});
+    //const browser = await puppeteer.launch({executablePath: '/usr/bin/chromium-browser'});
+    const page = await browser.newPage();
+    await page.goto(url);
+    await page.screenshot({path: path});
+
+    await browser.close();
 })();

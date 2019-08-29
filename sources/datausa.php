@@ -124,6 +124,8 @@ function fetch_meta($placeID) {
     $result['poverty_raw']  = $pov_sm / $pov_lg;
     $result['image'] = "https://datausa.io/api/profile/geo/".$result['id']."/splash";
 
+    $result['town_full'] = str_replace(" PUMA","",$result['town_full']);
+
     file_put_contents('cache/datausa/'.$placeID.'.json',json_encode($result));
     return $result;
 
