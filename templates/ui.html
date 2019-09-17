@@ -1,17 +1,19 @@
 
-<h2>Every Single Month Generator</h2>
+<h2><a href="index.php" style="text-decoration: none; color: black">Every Single Month Generator</a></h2>
 <p>Type in the name of a city or town, and then click 'Generate'. Or <a href="index.php?action=gallery">browse existing memes</a>.</p>
 <form action="index.php">
 
     <input type="hidden" name="action" value="process" />
-    <input type="text" size="35" name="city" placeholder="City or town" id="name_input" list="huge_list" value="{CITY}" />
+<!--    <input type="text" size="35" name="city" placeholder="City or town" id="name_input" list="huge_list" value="{CITY}" />-->
+    <input size="35" name="city_name" placeholder="City or town" id="name_input" list="huge_list" value="{CITY_NAME}" />
+    <input type="hidden" size="15" name="city" id="geo" value="{CITY}" placeholder="" />
     <datalist id="huge_list">
     </datalist>
     <input type="submit" value="Generate" />
 
 </form>
 
-
+<!--
 <script type="text/javascript">
 
     window.addEventListener("load", function(){
@@ -73,6 +75,25 @@
         alert("name input is invalid")
         return false;
     }
+</script>
+-->
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $('#name_input').autocomplete({ source:'sources/autocomplete_cityname.php', select: acSelected, focus: acSelected, minLength:3 });
+    });
+
+    function acSelected(event, ui) {
+        var acString = ui.item.value;
+        var acInfo = acString.split("||");
+        $("#name_input").val(acInfo[4]);
+        $("#geo").val(acInfo[0]);
+        //$("#extra_info").html("Extra Info from the query: "+acInfo[0]+", "+acInfo[1]+", "+acInfo[2]+", "+acInfo[3]+", "+acInfo[4]+", ");
+
+        // now that we've handled the data, don't re-modify the city field
+        return false;
+    }
+
 </script>
 
 </body>

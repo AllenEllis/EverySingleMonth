@@ -32,6 +32,7 @@ if(!isset($_GET['action'])) {
     echo $ui_header;
     $ui = file_get_contents("templates/ui.html");
     $ui = str_replace("{CITY}","",$ui);
+    $ui = str_replace("{CITY_NAME}","",$ui);
     echo $ui;
 
 }
@@ -39,7 +40,8 @@ if(!isset($_GET['action'])) {
 if($action == 'process') {
     // we are processing the user's initial input
 
-    $city = $_GET['city']; //todo: sanitize input
+    $city = get_param('city');
+    $city_name = get_param('city_name');
 
     $data = get_data($city);
 
@@ -51,6 +53,7 @@ if($action == 'process') {
 
     $ui = file_get_contents("templates/ui.html");
     $ui = str_replace("{CITY}",$city,$ui);
+    $ui = str_replace("{CITY_NAME}",$city_name,$ui);
     echo $ui;
 
     if(!$data) {
@@ -157,8 +160,8 @@ if($action =='png') {
     }
 
     $pngpath = $baseURI . "/" . $path;
-    echo "PNG saved to: <a href='$pngpath'>$pngpath</a><hr />
-   <a href='$pngpath'><img src='$pngpath' width='1080' height='1080' /></a>";
+    debug( "PNG saved to: <a href='$pngpath'>$pngpath</a><hr />
+   <a href='$pngpath'><img src='$pngpath' width='1080' height='1080' /></a>");
 
 }
 
@@ -293,13 +296,13 @@ function write_html($data) {
     $data['path'] = "exports/html/".$data['id']."_".$data['imagehash'].".html";
 
     if(file_exists($data['path'])) {
-        echo "File exists at <a href='$baseURI/".$data['path']."'>" . $data['path']."</a>";
+        debug( "File exists at <a href='$baseURI/".$data['path']."'>" . $data['path']."</a>");
         return $data['path'];
     }
     $html =  generate_html($data);
 
     file_put_contents($data['path'],$html) or die("Failed to write output");
-    echo "Rendered output successfully to <a href='$baseURI/".$data['path']."'>" . $data['path']."</a>";
+    debug("Rendered output successfully to <a href='$baseURI/".$data['path']."'>" . $data['path']."</a>");
 
 
 
@@ -387,3 +390,17 @@ function generate_html($data)
 
 }
 
+
+
+function debug($string) {
+    if(@$_GET['debug'] == 1) echo $string;
+}
+
+function get_param($param) {
+    $param_val = $_GET[$param];
+
+    if($param == "city"){
+    }
+
+    return $param_val;
+}

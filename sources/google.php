@@ -6,7 +6,7 @@ function get_google($data) {
     $city = $data['id'];
     $data['path'] = "cache/google/".$city."-".$data['slug'].".json";
 
-
+    debug($data['path']);
     if(@file_exists($data['path'])) {
         $result = json_decode(file_get_contents($data['path']), true);
 
