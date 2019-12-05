@@ -160,7 +160,7 @@ if($action =='png') {
     }
 
     $pngpath = $baseURI . "/" . $path;
-    debug( "PNG saved to: <a href='$pngpath'>$pngpath</a><hr />
+    echo( "PNG saved to: <a href='$pngpath'>$pngpath</a><hr />
    <a href='$pngpath'><img src='$pngpath' width='1080' height='1080' /></a>");
 
 }

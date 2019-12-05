@@ -5,11 +5,11 @@
 		exit;
 	} else {
 		$acTerm = trim($_REQUEST['term']);
-		$acTerm = filter_var($acTerm, FILTER_SANITIZE_STRING);
+		$acTerm = urlencode(filter_var($acTerm, FILTER_SANITIZE_STRING));
 	}
 
   #$acTerm = "harmony";
-	$cityQueryURL = "https://datausa.io/api/search/?kind=geo&q=";
+	$cityQueryURL = "https://datausa.io/api/search/?kind=geo&hierarchy=place&q=";
 	$acData = array();
 
 	$ch = curl_init();
@@ -40,7 +40,7 @@
 			#'label' => $qResp[4],
 			#'value' => $qResp[0]."||".$qResp[1]."||".$qResp[2]."||".$qResp[3]."||".$qResp[4]
 			'label' => $qResp['name'],
-			'value' => $qResp['id'] ."||".$qResp['id']."||".$qResp['id']."||".$qResp['id']."||".$qResp['id']
+			'value' => $qResp['id'] ."||".$qResp['id']."||".$qResp['id']."||".$qResp['id']."||".$qResp['name']
 		);
 	}
 
