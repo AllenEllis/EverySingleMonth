@@ -81,7 +81,7 @@ function get_meta($placeID) {
     if(!$placeID) return FALSE;
     $path = "cache/datausa/".$placeID.".json";
 
-    if(@file_exists($path) && $_GET['nocache'] != 1) {
+    if(@file_exists($path) && @$_GET['nocache'] != 1) {
         $result = json_decode(file_get_contents($path), true);
         debug("Loading from cache <tt>$path</tt><br>");
 
