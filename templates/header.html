@@ -1,9 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="INSPIRO" />
+    <meta name="description" content="Themeforest Template Polo">
+    <!-- Document title -->
     <title>Every Single Month</title>
+    <!-- Stylesheets & Fonts -->
+    <link href="static/css/plugins.css" rel="stylesheet">
+    <link href="static/css/style.css" rel="stylesheet">
+
     <style type="text/css">
+        #formContainer {
+            max-width: 25rem;
+            margin: auto;
+        }
+
+        #formContainer input {
+            margin-bottom: .75rem;
+        }
+
+
+        section#saved {
+            padding-top: 20px;
+        }
+
+        #finalImage {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .caption {
+
+            padding-top: 1rem;
+        }
+
+        iframe.meme {
+            -webkit-transform:scale(0.5);
+            -moz-transform-scale(0.5);
+            margin:-250px;
+            border: 0;
+        }
+
+        @media (min-width: 992px) {
+            .generatedNumber {
+                min-width: 100%;
+            }
+        }
+
+
+        @media (min-width: 1200px) {
+            .generatedNumber {
+                min-width: 100%;
+            }
+        }
+
 
         div.thumbnail {
             width:250px;
@@ -17,8 +70,8 @@
             height: 100%;
             object-fit: cover;
         }
-
     </style>
+
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js "></script>
 
     <link type="text/css" rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
@@ -26,7 +79,6 @@
     <script type="text/javascript">
 
         window.onload = function googleCall(){
-
 
             // ajax update for Google image loading
             var objXMLHttpRequest = new XMLHttpRequest();
@@ -67,5 +119,44 @@
 
         // #bg-image - needs its background-image property updated
     </script>
+
 </head>
+
 <body>
+<!-- Body Inner -->
+<div class="body-inner">
+    <!-- Header -->
+    <header id="header" data-transparent="true" data-fullwidth="true" class="dark submenu-light">
+        <div class="header-inner">
+            <div class="container">
+                <!--Logo-->
+                <div id="logo">
+                    <a href="index.php">
+                        <span class="logo-default">ESM</span>
+                        <span class="logo-dark">ESM</span>
+                    </a>
+                </div>
+                <!--End: Logo-->
+                <!--Navigation Resposnive Trigger-->
+                <div id="mainMenu-trigger">
+                    <a class="lines-button x"><span class="lines"></span></a>
+                </div>
+                <!--end: Navigation Resposnive Trigger-->
+                <!--Navigation-->
+                <div id="mainMenu">
+                    <div class="container">
+                        <nav>
+                            <ul>
+                                <li><a href="#">Home</a></li>
+                                <li><a href="#freedomdividend">The Freedom Dividend</a></li>
+                                <li><a href="#faqs">FAQs</a></li>
+                                <li><a href="#towns">Towns</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <!--end: Navigation-->
+            </div>
+        </div>
+    </header>
+    <!-- end: Header -->

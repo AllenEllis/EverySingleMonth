@@ -1,20 +1,6 @@
 <?php
 
 //phpinfo();
-/*
-require 'vendor/autoload.php';
-
-use Aws\S3\S3Client;
-use Aws\Exception\AwsException;
-
-
-//Create a S3Client
-$s3 = new Aws\S3\S3Client([
-    'profile' => 'default',
-    'version' => 'latest',
-    'region' => 'us-east-2'
-]);
-*/
 
 include("config.php");
 
@@ -22,66 +8,18 @@ $baseURI = $_GLOBAL['baseURI'];
 
 require('sources/datausa.php');
 require('sources/google.php');
+require('sources/esm.php');
 
 $action = @$_GET['action'];
 
 
 if(!isset($_GET['action'])) {
-    $ui_header = file_get_contents("templates/header.html");;
-    $ui_header = str_replace("{CITY}","",$ui_header);
-    echo $ui_header;
-    $ui = file_get_contents("templates/ui.html");
-    $ui = str_replace("{CITY}","",$ui);
-    $ui = str_replace("{CITY_NAME}","",$ui);
-    echo $ui;
-
+    do_home();
 }
 
 if($action == 'process') {
-    // we are processing the user's initial input
 
-    $city = get_param('city');
-    $city_name = get_param('city_name');
-
-    $data = get_data($city);
-
-
-
-    $ui_header = file_get_contents("templates/header.html");;
-    $ui_header = str_replace("{CITY}",$city,$ui_header);
-    echo $ui_header;
-
-    $ui = file_get_contents("templates/ui.html");
-    $ui = str_replace("{CITY}",$city,$ui);
-    $ui = str_replace("{CITY_NAME}",$city_name,$ui);
-    echo $ui;
-
-    if(!$data) {
-        echo "<br />Error: sorry, that didn't work. When you're typing, please actually click one of the items from the autocomplete dropdown.";
-        return;
-    }
-
-
-    $city = $_GET['city'];
-
-    echo "<br />Generating meme for <strong>".$data['town_full']."</strong><hr />";
-
-    $iframe = file_get_contents("templates/iframe.html");
-    $iframe = str_replace("{IMAGE}",$data['image'],$iframe);
-    $iframe = str_replace("{BASEURI}",$baseURI,$iframe);
-    $iframe = str_replace("{CITY}",$city,$iframe);
-    echo $iframe;
-
-    //echo "Don't like the photo?<br /><form action='?'> <input type='submit' value='Choose a Google Photo' /></form>";
-
-    echo "<h3>Choose a background image:</h3>";
-    echo "<input type='text' id='user-image' placeholder='Paste an image URL' oninput='updateBG(this.value)' size='65' />";
-
-    //$googleimages = getAPIresult('googleimages',$city);
-    $spinner = file_get_contents("templates/spinner.html");
-    echo "<div id='google-container'>Loading Google images...<br />$spinner</div>";
-
-
+    do_process();
 
 
 }
@@ -94,11 +32,18 @@ if($action == 'google') {
 
     $googleimages = get_google($data);
 
-    echo "<h3>Or click a Google Images search</h3>";
-    $out = "";
+    $images = "";
+    $i = 1;
     foreach($googleimages as $image) {
-        $out .= do_template("image", $image);
+        if($i > 20) break;
+        $images .= do_template("image", $image);
+        $i++;
     }
+
+    $image_parent = file_get_contents("templates/image_parent.html");
+    $image_parent = str_replace("{IMAGES}",$images,$image_parent);
+
+    $out = $image_parent;
 
     echo $out;
 
@@ -166,24 +111,7 @@ if($action =='png') {
 }
 
 
-if($action == 'gallery') {
 
-    echo "<h3>Existing images</h3>";
-    echo "<p>Browse through existing images that other users have generated.</p>";
-    echo "<p><a href='index.php'>Go back</a></p>";
-    $files = getDirContents("exports/png");
-    foreach($files as $file) {
-        $url = $baseURI . "/" . $file;
-        echo <<<END
-<div class="thumbnail">
-    <a href="$url">
-        <img src="$url" style="width: 256px; height: 256px; float: left" />
-    </a>
-</div>
-END;
-
-    }
-}
 
 
 function getDirContents($dir, &$results = array()){
@@ -237,37 +165,6 @@ function do_template($template, $data) {
     $html = str_replace("{THUMBNAIL}",$data['thumbnail'],$html);
     $html = str_replace("{SRC}",$data['sourceUrl'],$html);
     return $html;
-}
-
-function getAPIresult($service, $city) {
-
-
-    if($service == 'wikipedia') {
-        // http://techslides.com/grab-wikipedia-pictures-by-api-with-php
-
-        $result = file_get_contents("cache/wikipedia-01.json");
-        return $result;
-    }
-
-    if($service == 'unsplash') {
-
-
-        return FALSE;
-    }
-
-    if($service == 'googleimages') {
-        $result = file_get_contents("cache/googleimages-01.json");
-
-        $result = json_decode($result, TRUE);
-        $images = $result['image_results'];
-
-        /*foreach($images as $image) {
-
-        }*/
-
-        return $images;
-    }
-
 }
 
 

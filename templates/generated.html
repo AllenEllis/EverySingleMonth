@@ -1,0 +1,122 @@
+<!-- Page title -->
+<section id="page-title" data-bg-parallax="{IMAGE}">
+    <!--<div class="parallax-container img-loaded" data-velocity="-.140" style="background: url('https://datausa.io/api/profile/geo/16000US1928515/splash');"></div>-->
+    <div class="bg-overlay"></div>
+    <div class="container">
+        <div class="page-title">
+            <h1 class="text-uppercase text-medium">{TOWN_FULL}</h1>
+            <span>With an adult population estimated at <strong>{POP}</strong>, The Freedom Dividend would bring this town <strong>{TOTAL}</strong> every single month.</span>
+        </div>
+    </div>
+</section>
+
+
+<section class="p-b-10">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="heading-text heading-section">
+                    <h2>THE NUMBERS</h2>
+                    <span class="lead">The Freedom Dividend would give an additional <strong>$12,000</strong> per year to every adult in {TOWN_SHORT}, no strings attached.
+                            <br /><br />
+                            Imagine the impact of an extra <strong>{TOTAL}</strong> coming into {TOWN_SHORT} each month. Much of this money would flow right back into
+                            local businesses, organizations and charities.</span>
+
+                </div>
+            </div>
+            <div class="col-lg-6 m-t-60">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-4 generatedNumber">
+                        <!-- Stats -->
+                        <div class="text-center">
+                            <span class="display-4 d-block text-dark mb-2">{INCOME}</span>
+                            <p class="lead">Median Income</p>
+                        </div>
+                        <!-- end: Stats item-->
+                    </div>
+                    <div class="col-md-4 generatedNumber">
+                        <!-- Stats item -->
+                        <div class="text-center">
+                            <span class="display-4 d-block text-dark mb-2">{POP}</span>
+                            <p class="lead">Adult Population</p>
+                        </div>
+                        <!-- end: Stats item-->
+                    </div>
+
+                    <div class="col-md-4 generatedNumber">
+                        <!-- Stats -->
+                        <div class="text-center">
+                            <span class="display-4 d-block text-dark mb-2">{POVERTY}</span>
+                            <p class="lead">Poverty Rate</p>
+                        </div>
+                        <!-- end: Stats item -->
+                    </div>
+
+                </div>
+                <!--
+                <div class="p-progress-bar-container title-up small extra-small color">
+                    <div class="p-progress-bar" data-percent="21,516" data-delay="100" data-type=" ">
+                        <div class="progress-title">Adult Population</div>
+                    </div>
+                </div>
+                <div class="p-progress-bar-container title-up small extra-small color">
+                    <div class="p-progress-bar" data-percent="19" data-delay="200" data-type="%">
+                        <div class="progress-title">Poverty</div>
+                    </div>
+                </div>
+                <div class="p-progress-bar-container title-up small extra-small color">
+                    <div class="p-progress-bar" data-percent="78" data-delay="300" data-type="%">
+                        <div class="progress-title">JQUERY</div>
+                    </div>
+                </div>
+                <div class="p-progress-bar-container title-up small extra-small color">
+                    <div class="p-progress-bar" data-percent="65" data-delay="400" data-type="%">
+                        <div class="progress-title">MYSQL</div>
+                    </div>
+                </div>
+                -->
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<section>
+    <div class="container">
+        <div class="heading-text heading-section ">
+            <h2>SPREAD THE WORD</h2>
+            <span class="lead">Choose an image to represent {TOWN_SHORT}:</span>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div id='google-container'>
+                    {SPINNER}
+                </div>
+
+                <br style="clear: both" />
+                <hr style="margin-top: 1rem; width:500px" />
+
+                <h4>Or, specify your own image:</h4>
+                <input type='text' id='user-image' placeholder='Paste an image URL' oninput='updateBG(this.value)' size='65' />
+
+            </div>
+            <div class="col-lg-6 sidebar sticky-sidebar">
+                {IFRAME}
+                <!--<img src="https://everysinglemonth.org/exports/png/16000US1928515_178eae.png" class="img-fluid rounded" alt="">-->
+            </div>
+        </div>
+    </div>
+</section>
+
+<form action="index.php">
+    <input type="hidden" name="action" value="write" />
+    <input type="hidden" name="city" value="{CITY}" />
+    <input type="hidden" name="src" id="formsrc" value="{IMAGE}" />
+    <p class="text-center">
+    <input type="submit" value="Save"  class="btn btn-lg" />
+    </p>
+
+</form>
+
+<br /><br />

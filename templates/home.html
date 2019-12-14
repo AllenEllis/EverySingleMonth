@@ -1,0 +1,146 @@
+
+
+<!-- Inspiro Slider -->
+<div id="slider" class="inspiro-slider slider-fullscreen dots-creative">
+    <!-- Slide 1 -->
+    <div class="slide kenburns" data-bg-image="static/seth-dewey-EOlo15oy8Ks-unsplash.jpg">
+        <div class="bg-overlay"></div>
+        <div class="container">
+            <div class="slide-captions text-center text-light">
+                <!-- Captions -->
+                <h1>The Freedom Dividend</h1>
+                <p>With $1,000 given to every American adult, find out how much your town would receive every month.</p>
+
+                <div id="formContainer">
+                <form action="index.php">
+
+                    <input type="hidden" name="action" value="process" />
+                    <!--    <input type="text" size="35" name="city" placeholder="City or town" id="name_input" list="huge_list" value="{CITY}" />-->
+                    <input type="text" class="form-control" name="city_name" placeholder="Your town name" id="name_input" list="huge_list" value="{CITY_NAME}" />
+                    <input type="hidden" size="15" name="city" id="geo" value="{CITY}" placeholder="" />
+                    <datalist id="huge_list">
+                    </datalist>
+                    <input type="submit" value="Generate" class="btn" />
+
+                </form>
+
+                <script type="text/javascript">
+
+                    $(document).ready(function() {
+                        $('#name_input').autocomplete({ source:'sources/autocomplete_cityname.php', select: acSelected, focus: acSelected, minLength:3 });
+                    });
+
+                    function acSelected(event, ui) {
+                        var acString = ui.item.value;
+                        var acInfo = acString.split("||");
+                        $("#name_input").val(acInfo[4]);
+                        $("#geo").val(acInfo[0]);
+                        //$("#extra_info").html("Extra Info from the query: "+acInfo[0]+", "+acInfo[1]+", "+acInfo[2]+", "+acInfo[3]+", "+acInfo[4]+", ");
+
+                        // now that we've handled the data, don't re-modify the city field
+                        return false;
+                    }
+
+                </script>
+
+
+
+                </div>
+                <!-- end: Captions -->
+            </div>
+        </div>
+    </div>
+    <!-- end: Slide 1 -->
+</div>
+<!--end: Inspiro Slider -->
+<!-- WELCOME -->
+<section id="freedomdividend" class="p-b-0">
+    <div class="container">
+        <div class="heading-text heading-section text-center m-b-40" data-animate="fadeInUp">
+            <h2>THE FREEDOM DIVIDEND</h2>
+        </div>
+        <div class="row" data-animate="fadeInUp">
+            <div class="col-lg-6">
+                <span class="lead">Words go here blah blah.</span>
+            </div>
+            <div class="col-lg-6">
+                <img class="img-fluid" src="static/images/sean-benesh-3vZqF0ky_Cg-unsplash.jpg"  alt="">
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- end: WELCOME -->
+<!-- WHAT WE DO -->
+<section class="background-grey" id="faqs">
+    <div class="container">
+        <div class="heading-text heading-section">
+            <h2>HOW DOES IT WORK?</h2>
+            <span class="lead">Words go here. Common FAQ answers below.</span>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <div data-animate="fadeInUp" data-animate-delay="0">
+                    <h4>Modern Design</h4>
+                    <p>Lorem ipsum dolor sit amet, blandit vel sapien vitae, condimentum ultricies magna et.
+                        Quisque euismod orci ut et lobortis aliquam.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div data-animate="fadeInUp" data-animate-delay="200">
+                    <h4>Loaded with Features</h4>
+                    <p>Lorem ipsum dolor sit amet, blandit vel sapien vitae, condimentum ultricies magna et.
+                        Quisque euismod orci ut et lobortis aliquam.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div data-animate="fadeInUp" data-animate-delay="400">
+                    <h4>Completely Customizable</h4>
+                    <p>Lorem ipsum dolor sit amet, blandit vel sapien vitae, condimentum ultricies magna et.
+                        Quisque euismod orci ut et lobortis aliquam.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div data-animate="fadeInUp" data-animate-delay="600">
+                    <h4>100% Responsive Layout</h4>
+                    <p>Lorem ipsum dolor sit amet, blandit vel sapien vitae, condimentum ultricies magna et.
+                        Quisque euismod orci ut et lobortis aliquam.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div data-animate="fadeInUp" data-animate-delay="800">
+                    <h4>Clean Modern Code</h4>
+                    <p>Lorem ipsum dolor sit amet, blandit vel sapien vitae, condimentum ultricies magna et.
+                        Quisque euismod orci ut et lobortis aliquam.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div data-animate="fadeInUp" data-animate-delay="1000">
+                    <h4>Free Updates & Support</h4>
+                    <p>Lorem ipsum dolor sit amet, blandit vel sapien vitae, condimentum ultricies magna et.
+                        Quisque euismod orci ut et lobortis aliquam.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- END WHAT WE DO -->
+<!-- PORTFOLIO -->
+<section class="p-b-0" id="towns">
+    <div class="container">
+        <div class="heading-text heading-section">
+            <h2>Other Towns</h2>
+            <span class="lead">See what some of our other users have been generating and sharing.</span>
+        </div>
+    </div>
+    <div class="portfolio">
+        <!-- Portfolio Items -->
+        <div id="portfolio" class="grid-layout portfolio-4-columns" data-margin="0">
+            {GALLERY}
+
+
+        </div>
+        <!-- end: Portfolio Items -->
+    </div>
+</section>
+<!-- end: PORTFOLIO -->
