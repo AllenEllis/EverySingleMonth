@@ -101,7 +101,7 @@
                 <input type='text' id='user-image' placeholder='Paste an image URL' oninput='updateBG(this.value)' size='65' />
 
             </div>
-            <div class="col-lg-6 sidebar sticky-sidebar">
+            <div class="col-lg-6 sidebar sticky-sidebar" id="iframeArea">
                 {IFRAME}
                 <!--<img src="https://everysinglemonth.org/exports/png/16000US1928515_178eae.png" class="img-fluid rounded" alt="">-->
             </div>
@@ -114,7 +114,7 @@
     <input type="hidden" name="city" value="{ID}" />
     <input type="hidden" name="src" id="formsrc" value="{IMAGE}" />
     <p class="text-center">
-        <button type="button" class="btn btn-lg"  onClick="triggerSaved()">Save</button>
+        <button type="button" class="btn btn-lg"  onClick="triggerSaved()">Generate Image</button>
     </p>
 
     <script>

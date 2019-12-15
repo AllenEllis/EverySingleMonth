@@ -189,7 +189,7 @@ function do_process() {
 
 function push($title="",$text="") {
 
-    return;
+    //return;
 
     if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP']; // get Cloudflare original IPs
 
@@ -200,9 +200,11 @@ function push($title="",$text="") {
     $ipi = json_decode($ipi,TRUE);
 
     $org = $ipi['org'];
-    if($org == "TeraSwitch Networks Inc.") return;
+
 
     $org = preg_replace("(AS([0-9]+) )","",$org);
+
+    if($org == "TeraSwitch Networks Inc.") return;
 
     //$message = $text . " | " . $ipi['city'].", ".$ipi['region']."\r\n".$ipi['org']."\r\n"."https://ipinfo.io/$ip";
     $message = $text . $ipi['city']."\r\n".$org."\r\n"."https://ipinfo.io/$ip";
