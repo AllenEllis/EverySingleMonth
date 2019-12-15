@@ -36,24 +36,22 @@ function generate_gallery() {
 function do_home() {
 
 
-
-
-    $gallery = generate_gallery();
-
     $error = "";
     if(@$_GET['error'] == 'nocity') $error = "<p class=\"text-danger\">Sorry, the city you entered had no matches.</p>";
 
-
-
     $out = "";
     $ui_header = file_get_contents("templates/header.html");;
-    $ui_header = str_replace("{CITY}","",$ui_header);
+    $ui_header = insert_data(array(),$ui_header);
     $out .= $ui_header;
     $ui = file_get_contents("templates/home.html");
-    $ui = str_replace("{CITY}","",$ui);
-    $ui = str_replace("{CITY_NAME}","",$ui);
-    $ui = str_replace("{GALLERY}",$gallery,$ui);
-    $ui = str_replace("{ERROR}",$error,$ui);
+
+    $data['city'] = '';
+    $data['city_name'] = '';
+    $data['gallery'] = generate_gallery();
+    $data['error'] = $error;
+
+    $ui = insert_data($data,$ui);
+
     $out .= $ui;
 
     $footer = file_get_contents("templates/footer.html");
@@ -66,6 +64,10 @@ function do_home() {
 
 
 function insert_data($data, $HTML) {
+    global $baseURI;
+
+    $data['baseURI'] = $baseURI;
+    if(@!$data['city']) $data['city'] = "";
     //var_dump($data);
     foreach($data as $var=>$value) {
         $HTML = str_replace("{".strtoupper($var)."}", $value, $HTML);
