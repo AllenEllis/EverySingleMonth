@@ -109,6 +109,8 @@ if($action == 'doPNG') {
 
     echo $HTML;
 
+    push("Saved",$data['town_full']);
+
 
 }
 if($action == 'debug') {

@@ -59,6 +59,8 @@ function do_home() {
 
     echo $out;
 
+    push("Home");
+
 }
 
 
@@ -90,6 +92,7 @@ function do_error($data,$title="",$message="") {
     $ui = insert_data($data,$ui);
 
     echo $ui;
+    push("Error",$message);
     die;
 }
 
@@ -147,16 +150,13 @@ function do_process() {
 
     $generated_template = file_get_contents("templates/generated.html");
     $generated_template = insert_data($data,$generated_template);
-/*
-    $generated_template = str_replace("{CITY_NAME}",$city_name,$generated_template);
-    $generated_template = str_replace("{POP}",$data['pop'],$generated_template);
-    $generated_template = str_replace("{TOTAL}",$data['total'],$generated_template);
-*/
+
     $generated_template = str_replace("{DEBUG}",$debug,$generated_template);
 
 
     if(!$data) {
         echo "<br />Error: sorry, that didn't work. When you're typing, please actually click one of the items from the autocomplete dropdown.";
+        push("Error","Code 101");
         return; // todo this all looks like it's in the wrong place. Better way of handling errors?
     }
 
@@ -183,5 +183,37 @@ function do_process() {
     $out .= $footer;
     echo $out;
 
+    push("Generated",$data['town_full']);
 
+}
+
+function push($title="",$text="") {
+
+    if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP']; // get Cloudflare original IPs
+
+    if($text != "") $text = $text . " | ";
+
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $ipi = @file_get_contents("https://ipinfo.io/$ip");
+    $ipi = json_decode($ipi,TRUE);
+
+    $org = $ipi['org'];
+
+    $org = preg_replace("(AS([0-9]+) )","",$org);
+
+    //$message = $text . " | " . $ipi['city'].", ".$ipi['region']."\r\n".$ipi['org']."\r\n"."https://ipinfo.io/$ip";
+    $message = $text . $ipi['city']."\r\n".$org."\r\n"."https://ipinfo.io/$ip";
+    curl_setopt_array($ch = curl_init(), array(
+        CURLOPT_URL => "https://api.pushover.net/1/messages.json",
+        CURLOPT_POSTFIELDS => array(
+            "token" => "axi4m2oh3m98f41ha2j7y6pap9cwv1",
+            "user" => "uuet8bfx4sdt7y57x8sjkhgcbrt85b",
+            "title" => "ESM " . $title,
+            "message" => $message //"Here We Go!\r\nIP: $ip",
+        ),                                                                                                                      CURLOPT_SAFE_UPLOAD => true,
+        CURLOPT_RETURNTRANSFER => true,
+    ));
+    curl_exec($ch);
+    curl_close($ch);
+    debug("Going to push " . $message);
 }
