@@ -59,7 +59,67 @@ if($action == 'render') {
 
 }
 
+if($action == 'doPNG') {
+    //sleep(2);
+
+
+    global $baseURI;
+
+    $id = $_GET['id']; //todo: sanitize input
+    $src = $_GET['src'];
+    $hash = hash_image($src);
+    debug("Image source is $src <br>");
+    // todo check to see if already exists at some point in this flow
+
+    $data = get_data($id);
+    if(!$data) return "Sorry that is not a valid request.";
+    $data['image'] = $src;
+
+    $HTMLpath = write_html($data);
+    //write_png($data);
+
+
+
+    $HTMLURI = $baseURI . "/exports/html/" . $id . "_" . $hash . ".html";
+    $PNGpath = "exports/png/" . $id . "_" . $hash . ".png";
+
+    /*echo $url;
+    echo "<hr />";
+    echo $path;
+    echo "<hr />";
+*/
+
+    if(!file_exists($PNGpath)) {
+        // todo so much user sanitization it's not even funny
+        $args = "/usr/bin/node screenshot.js " . escapeshellarg($HTMLURI) . " " . escapeshellarg($PNGpath);
+        debug("Trying " . $args . " <hr />");
+        //exec($args, $output);
+        //echo implode("\n", $output);
+    }
+
+    $PNGURI = $baseURI . "/" . $PNGpath;
+    debug( "PNG saved to: <a href='$PNGURI'>$PNGpath</a><hr />
+   <a href='$PNGURI'><img src='$PNGURI' width='1080' height='1080' /></a>");
+
+    $data['pnguri'] = $PNGURI;
+
+    $HTML = file_get_contents("templates/generated_saved.html");
+
+    $HTML = insert_data($data,$HTML);
+
+    echo $HTML;
+
+
+}
+if($action == 'debug') {
+    $city = $_GET['city']; //todo: sanitize input
+    $data = get_data($city);
+    var_dump($data);
+}
+/*
+
 if($action =='write') {
+    // todo - this whole block is deprecated
     $city = $_GET['city']; //todo: sanitize input
     // todo check to see if already exists at some point in this flow
 
@@ -74,14 +134,8 @@ if($action =='write') {
 
 }
 
-if($action == 'debug') {
-    $city = $_GET['city']; //todo: sanitize input
-    $data = get_data($city);
-    var_dump($data);
-}
-
 if($action =='png') {
-
+    // todo - this whole block is deprecated
     $city = $_GET['city'];
     $src = $_GET['src'];
     $hash = hash_image($src);
@@ -91,16 +145,13 @@ if($action =='png') {
     $url = $baseURI . "/exports/html/" . $city . "_" . $hash . ".html";
     $path = "exports/png/" . $city . "_" . $hash . ".png";
 
-    /*echo $url;
-    echo "<hr />";
-    echo $path;
-    echo "<hr />";
-*/
 
     // todo check to see if image exists first
     if(!file_exists($path)) {
         // todo so much user sanitization it's not even funny
-        exec("/usr/bin/node screenshot.js " . escapeshellarg($url) . " " . escapeshellarg($path), $output);
+        $args = "/usr/bin/node screenshot.js " . escapeshellarg($url) . " " . escapeshellarg($path);
+        echo "Trying " . $args . " <hr />";
+        exec($args, $output);
         //echo implode("\n", $output);
     }
 
@@ -109,7 +160,7 @@ if($action =='png') {
    <a href='$pngpath'><img src='$pngpath' width='1080' height='1080' /></a>");
 
 }
-
+*/
 
 
 
@@ -187,6 +238,7 @@ function hash_image($image) {
 
 function write_html($data) {
     if(!isset($data)) return false;
+    //echo "Trying to write HTML<br>";
     global $baseURI;
     $data['image'] = $_GET['src']; // todo: sanatize input
     $data['imagehash'] = hash_image($data['image']);
@@ -201,7 +253,7 @@ function write_html($data) {
     file_put_contents($data['path'],$html) or die("Failed to write output");
     debug("Rendered output successfully to <a href='$baseURI/".$data['path']."'>" . $data['path']."</a>");
 
-
+    //echo "I made it through<br>";
 
     return $data['path'];
 

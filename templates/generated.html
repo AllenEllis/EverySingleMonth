@@ -111,12 +111,53 @@
 
 <form action="index.php">
     <input type="hidden" name="action" value="write" />
-    <input type="hidden" name="city" value="{CITY}" />
+    <input type="hidden" name="city" value="{ID}" />
     <input type="hidden" name="src" id="formsrc" value="{IMAGE}" />
     <p class="text-center">
     <input type="submit" value="Save"  class="btn btn-lg" />
+        <button type="button" class="btn btn-lg"  onClick="triggerSaved()">Save 2</button>
     </p>
+
+    <script>
+
+        function triggerSaved() {
+
+            // ajax update for image saving
+            var objXMLHttpRequest = new XMLHttpRequest();
+            var PNGContainer = document.getElementById("saved");
+            PNGContainer.style.display = "block";
+
+            objXMLHttpRequest.onreadystatechange = function() {
+                if(objXMLHttpRequest.readyState === 4) {
+                    if(objXMLHttpRequest.status === 200) {
+                        //alert(objXMLHttpRequest.responseText);
+                        PNGContainer.innerHTML = objXMLHttpRequest.responseText;
+                    } else {
+                        //alert('Error Code: ' +  objXMLHttpRequest.status);
+                        //alert('Error Message: ' + objXMLHttpRequest.statusText);
+
+                        PNGContainer.innerHTML = 'Error Code: ' +  objXMLHttpRequest.status + 'Error Message: ' + objXMLHttpRequest.statusText;
+                    }
+                }
+            }
+
+            var debugStr = "";
+            var debug="{DEBUG}";
+            if(debug == "1") var debugStr = "&debug=1";
+
+            imageSrc = "{IMAGE}"; // default to DataUSA image
+            var formsrc = document.getElementById("formsrc");
+            if(formsrc != "") imageSrc = formsrc.value;
+            objXMLHttpRequest.open('GET', 'index.php?action=doPNG&id={ID}&src='+imageSrc+debugStr);
+            objXMLHttpRequest.send();
+
+
+        }
+
+    </script>
 
 </form>
 
 <br /><br />
+
+<div id="saved" style="display:none">{SPINNER}</div>

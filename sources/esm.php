@@ -81,12 +81,15 @@ function do_process() {
     $ui_header = file_get_contents("templates/header.html");;
     $ui_header = str_replace("{CITY}",$city,$ui_header);
 
+    if(@$_GET['debug'] == 1) $debug = "1"; else $debug="0";
+
     $out .= $ui_header;
 
 
 
 
     $data = get_data($city);
+
 
 
     $generated_template = file_get_contents("templates/generated.html");
@@ -96,6 +99,7 @@ function do_process() {
     $generated_template = str_replace("{POP}",$data['pop'],$generated_template);
     $generated_template = str_replace("{TOTAL}",$data['total'],$generated_template);
 */
+    $generated_template = str_replace("{DEBUG}",$debug,$generated_template);
 
 
     if(!$data) {
