@@ -229,6 +229,9 @@ function push($title="",$text="") {
     if($org == "Facebook, Inc.") return;
     if($org == "Shenzhen Tencent Computer Systems Company Limited") return;
     if($org == "DigitalOcean, LLC") return;
+    if($org == "OVH SAS") return;
+    if($org == "Apple Inc.") return;
+    if($org == "Hetzner Online GmbH") return;
 
     //$message = $text . " | " . $ipi['city'].", ".$ipi['region']."\r\n".$ipi['org']."\r\n"."https://ipinfo.io/$ip";
     $message = $text . "(" . $ipi['city'].")\r\n".$org."\r\n"."https://ipinfo.io/$ip";
