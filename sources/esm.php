@@ -40,6 +40,10 @@ function do_home() {
 
     $gallery = generate_gallery();
 
+    $error = "";
+    if(@$_GET['error'] == 'nocity') $error = "<p class=\"text-danger\">Sorry, the city you entered had no matches.</p>";
+
+
 
     $out = "";
     $ui_header = file_get_contents("templates/header.html");;
@@ -49,6 +53,7 @@ function do_home() {
     $ui = str_replace("{CITY}","",$ui);
     $ui = str_replace("{CITY_NAME}","",$ui);
     $ui = str_replace("{GALLERY}",$gallery,$ui);
+    $ui = str_replace("{ERROR}",$error,$ui);
     $out .= $ui;
 
     $footer = file_get_contents("templates/footer.html");
@@ -69,6 +74,23 @@ function insert_data($data, $HTML) {
     return $HTML;
 }
 
+
+function do_error($data,$title="",$message="") {
+    $header = file_get_contents("templates/header.html");
+    $errorpage = file_get_contents("templates/error.html");
+    $footer = file_get_contents("templates/footer.html");
+
+    $ui = $header . $errorpage . $footer;
+
+    if(@$title) $data['ERROR_TITLE'] = $title;
+    if(@$message) $data['ERROR_MESSAGE'] = $message;
+
+    $ui = insert_data($data,$ui);
+
+    echo $ui;
+    die;
+}
+
 // we are processing the user's initial input
 function do_process() {
 
@@ -78,6 +100,35 @@ function do_process() {
 
     $out = "";
     $city = get_param('city');
+    $city_name = get_param('city_name');
+
+    if(!$city) {
+
+        if($city_name) {
+            // Looks like they didn't use the autocomplete correctly. We don't know the ID but we have
+            // a string, so we'll try one last lookup to get their data for them.
+            debug("No city ID provided but we have a city name ($city_name). Attemping a lookup.");
+
+            $cityID = call_API($city_name);
+
+            if($cityID) {
+                debug("It looks like we got cityID of ". $cityID);
+                $city = $cityID;
+            }
+            else {
+                // Still no match
+                do_error(array(),"No town found","Sorry, we could not find a town named <strong>$city_name</strong>.");
+            }
+
+
+        }
+        else {
+            // No city name or ID provided
+            header("Location:$baseURI?error=nocity");
+        }
+
+    }
+
     $ui_header = file_get_contents("templates/header.html");;
     $ui_header = str_replace("{CITY}",$city,$ui_header);
 

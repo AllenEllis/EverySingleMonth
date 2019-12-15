@@ -530,7 +530,7 @@ var INSPIRO = {},
                     });
                     $captions.each(function (index) {
                         var $captionElem = $(this),
-                            captionDelay = $captionElem.attr("data-caption-delay") || (index * 350 + 1000),
+                            captionDelay = $captionElem.attr("data-caption-delay") || (index * 500 + 300),
                             captionAnimation = $captionElem.attr('data-caption-animate') || defaultAnimation;
                         var t = setTimeout(function () {
                             $captionElem.css({
