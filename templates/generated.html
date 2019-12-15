@@ -146,6 +146,9 @@
                             objXMLHttpRequest.open('GET', 'index.php?action=doPNG&id={ID}&src='+imageSrc+debugStr);
                             objXMLHttpRequest.send();
 
+                            var elmnt = document.getElementById("saved");
+                            elmnt.scrollIntoView({ behavior: 'smooth', block: 'end'});
+
 
                         }
 
