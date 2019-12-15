@@ -207,6 +207,9 @@ function push($title="",$text="") {
     // Whitelist certain sources
     if($org == "TeraSwitch Networks Inc.") return;
     if($org == "Amazon.com, Inc.") return;
+    if($org == "Google LLC") return;
+    if($org == "Facebook, Inc.") return;
+    if($org == "Shenzhen Tencent Computer Systems Company Limited") return;
 
     //$message = $text . " | " . $ipi['city'].", ".$ipi['region']."\r\n".$ipi['org']."\r\n"."https://ipinfo.io/$ip";
     $message = $text . "(" . $ipi['city'].")\r\n".$org."\r\n"."https://ipinfo.io/$ip";
