@@ -204,10 +204,12 @@ function push($title="",$text="") {
 
     $org = preg_replace("(AS([0-9]+) )","",$org);
 
+    // Whitelist certain sources
     if($org == "TeraSwitch Networks Inc.") return;
+    if($org == "Amazon.com, Inc.") return;
 
     //$message = $text . " | " . $ipi['city'].", ".$ipi['region']."\r\n".$ipi['org']."\r\n"."https://ipinfo.io/$ip";
-    $message = $text . $ipi['city']."\r\n".$org."\r\n"."https://ipinfo.io/$ip";
+    $message = $text . "(" . $ipi['city'].")\r\n".$org."\r\n"."https://ipinfo.io/$ip";
     curl_setopt_array($ch = curl_init(), array(
         CURLOPT_URL => "https://api.pushover.net/1/messages.json",
         CURLOPT_POSTFIELDS => array(
