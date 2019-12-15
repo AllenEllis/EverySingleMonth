@@ -12,15 +12,16 @@
                 <p>With <strong>$1,000</strong> given each month to every American adult, see how this would impact your town.</p>
 
                 <div id="formContainer">
-                <form action="index.php">
+                <form action="index.php" style="">
 
                     <input type="hidden" name="action" value="process" />
                     <!--    <input type="text" size="35" name="city" placeholder="City or town" id="name_input" list="huge_list" value="{CITY}" />-->
-                    <input type="text" class="form-control" name="city_name" placeholder="Your town name" id="name_input" list="huge_list" value="{CITY_NAME}" />
+                    <input type="text" class="form-control" name="city_name" placeholder="Enter your town name" id="name_input" list="huge_list" value="{CITY_NAME}" />
                     <input type="hidden" size="15" name="city" id="geo" value="{CITY}" placeholder="" />
                     <datalist id="huge_list">
                     </datalist>
-                    <input type="submit" value="Generate" class="btn" />
+                    <!--<input type="submit" value="Generate" class="btn" />-->
+                    <button type="submit" class="btn btn-light-hover btn-light-hover">Generate &nbsp;<i class="icon-arrow-right"></i></button>
 
                     {ERROR}
 
