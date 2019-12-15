@@ -175,10 +175,10 @@
             <script type="text/javascript">
 
                 $(document).ready(function() {
-                    $('#name_input2').autocomplete({ source:'sources/autocomplete_cityname.php', select: acSelected, focus: acSelected, minLength:3 });
+                    $('#name_input2').autocomplete({ source:'sources/autocomplete_cityname.php', select: acSelected2, focus: acSelected2, minLength:3 });
                 });
 
-                function acSelected(event, ui) {
+                function acSelected2(event, ui) {
                     var acString = ui.item.value;
                     var acInfo = acString.split("||");
                     $("#name_input2").val(acInfo[4]);
