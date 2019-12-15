@@ -189,6 +189,8 @@ function do_process() {
 
 function push($title="",$text="") {
 
+    return;
+
     if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP']; // get Cloudflare original IPs
 
     if($text != "") $text = $text . " | ";
@@ -198,6 +200,7 @@ function push($title="",$text="") {
     $ipi = json_decode($ipi,TRUE);
 
     $org = $ipi['org'];
+    if($org == "TeraSwitch Networks Inc.") return;
 
     $org = preg_replace("(AS([0-9]+) )","",$org);
 
