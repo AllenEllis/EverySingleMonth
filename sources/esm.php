@@ -183,7 +183,7 @@ function do_process() {
     $out .= $footer;
     echo $out;
 
-    push("Generated",$data['town_full']);
+    push("Searched",$data['town_full']);
 
 }
 
