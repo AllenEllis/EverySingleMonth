@@ -190,13 +190,31 @@ function do_process() {
 function push($title="",$text="") {
 
     //return;
-
-    if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP']; // get Cloudflare original IPs
+    $token = "0ac60c7acf80b8"; //todo move to config.php
 
     if($text != "") $text = $text . " | ";
 
+
+    if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP']; // get Cloudflare original IPs
     $ip = $_SERVER['REMOTE_ADDR'];
-    $ipi = @file_get_contents("https://ipinfo.io/$ip");
+
+    // check the cache
+    $cache_path = "cache/ipinfo/" . urlencode($ip) . ".json";
+    //echo "loading from $cache_path<br>";
+    $ipi = @file_get_contents($cache_path);
+    //echo "result is <pre>$queryResponseJSON</pre>";
+    if(!$ipi){
+        $curl_req = "https://ipinfo.io/$ip?token=$token";
+        debug("This is a new IP, querying IPinfo with $curl_req");
+        $ipi = @file_get_contents($curl_req);
+        debug("I'm writing to " . $cache_path . " with data: <pre>$ipi</pre>");
+        @file_put_contents($cache_path,$ipi);
+    } else {
+        debug("Loaded IP data from cache at <tt>" . $cache_path . "</tt> with data: <pre>$ipi</pre>");
+    }
+
+    // make the request
+
     $ipi = json_decode($ipi,TRUE);
 
     $org = $ipi['org'];
@@ -210,6 +228,7 @@ function push($title="",$text="") {
     if($org == "Google LLC") return;
     if($org == "Facebook, Inc.") return;
     if($org == "Shenzhen Tencent Computer Systems Company Limited") return;
+    if($org == "DigitalOcean, LLC") return;
 
     //$message = $text . " | " . $ipi['city'].", ".$ipi['region']."\r\n".$ipi['org']."\r\n"."https://ipinfo.io/$ip";
     $message = $text . "(" . $ipi['city'].")\r\n".$org."\r\n"."https://ipinfo.io/$ip";
