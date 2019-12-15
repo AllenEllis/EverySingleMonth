@@ -1,5 +1,44 @@
 <?php
 
+
+// do the request
+function do_request($acTerm)
+{
+	$cityQueryURL = "https://datausa.io/api/search/?kind=geo&hierarchy=place&q=";
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $cityQueryURL . $acTerm);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: application/json; charset=utf-8'));
+
+	$queryResponseJSON = curl_exec($ch);
+
+	if (curl_error($ch)) {
+		print "Error info: " . curl_error($ch);
+	}
+
+	curl_close($ch);
+
+	$cache_path = "../cache/datausa/q_" . $acTerm . ".json";
+	#echo "I'm writing to " . $cache_path . " with data: <pre>$queryResponseJSON</pre>";
+	file_put_contents($cache_path,$queryResponseJSON);
+	#die;
+	return $queryResponseJSON;
+}
+
+function do_cache($acTerm){
+	$cache_path = "../cache/datausa/q_" . $acTerm . ".json";
+	//echo "loading from $cache_path<br>";
+	$queryResponseJSON = @file_get_contents($cache_path);
+	//echo "result is <pre>$queryResponseJSON</pre>";
+	if($queryResponseJSON) return $queryResponseJSON;
+	else	return false;
+}
+
+
+// main code here
+
+
 	// if the 'term' variable is not sent with the request, exit
 	if ( !isset($_REQUEST['term']) ) {
 		exit;
@@ -9,22 +48,15 @@
 	}
 
   #$acTerm = "harmony";
-	$cityQueryURL = "https://datausa.io/api/search/?kind=geo&hierarchy=place&q=";
+
 	$acData = array();
 
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $cityQueryURL.$acTerm);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: application/json; charset=utf-8'));
 
-	$queryResponseJSON = curl_exec($ch);
+	// try to get a cached result
+    $queryResponseJSON = do_cache($acTerm);
 
-	if (curl_error($ch)) {
-		print "Error info: ".curl_error($ch);
-	}
-
-	curl_close($ch);
+    // if false, there wasn't a cache, so do a request
+    if(!$queryResponseJSON) $queryResponseJSON = do_request($acTerm);
 
 	// Convert to array
 	$queryResponse = json_decode($queryResponseJSON, true);
