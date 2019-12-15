@@ -93,7 +93,7 @@ if($action == 'doPNG') {
         // todo so much user sanitization it's not even funny
         $args = "/usr/bin/node screenshot.js " . escapeshellarg($HTMLURI) . " " . escapeshellarg($PNGpath);
         debug("Trying " . $args . " <hr />");
-        //exec($args, $output);
+        exec($args, $output);
         //echo implode("\n", $output);
     }
 
