@@ -3,4 +3,5 @@ archive
 config.php
 cache/datausa/*.json
 cache/google/*.json
+cache/ipinfo/*.json
 node_modules
