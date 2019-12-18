@@ -238,13 +238,6 @@ function do_template($template, $data) {
 }
 */
 
-function hash_image($image) {
-
-    $image = urldecode($image);
-    $out = substr(md5($image),0,6);
-    //echo "I took $image and made $out";
-    return $out;
-}
 
 function write_html($data) {
     if(!isset($data)) return false;
@@ -355,16 +348,3 @@ function generate_html($data)
 }
 
 
-
-function debug($string) {
-    if(@$_GET['debug'] == 1) echo $string;
-}
-
-function get_param($param) {
-    $param_val = $_GET[$param];
-
-    if($param == "city"){
-    }
-
-    return $param_val;
-}

@@ -266,3 +266,26 @@ function push($title="",$text="") {
     curl_close($ch);
     debug("Going to push " . $message);
 }
+
+
+
+function debug($string) {
+    if(@$_GET['debug'] == 1) echo $string."<br />";
+}
+
+function get_param($param) {
+    $param_val = $_GET[$param];
+
+    if($param == "city"){
+    }
+
+    return $param_val;
+}
+
+function hash_image($image) {
+
+    $image = urldecode($image);
+    $out = substr(md5($image),0,6);
+    //echo "I took $image and made $out";
+    return $out;
+}
