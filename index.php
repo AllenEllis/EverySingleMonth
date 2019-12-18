@@ -94,7 +94,7 @@ if($action == 'doPNG') {
     echo "<hr />";
 */
 // Todo after reprocessing old images, I could reintroduce this cache
-    if(!file_exists($PNGpath)) {
+    if(file_exists($PNGpath)) {
         unlink($PNGpath);
     }
 
@@ -254,9 +254,14 @@ function write_html($data) {
     $data['imagehash'] = hash_image($data['image']);
     $data['path'] = "exports/html/".$data['id']."_".$data['imagehash'].".html";
 
+    // todo after fixing old images I can reintroduce this cache
+    /*
     if(file_exists($data['path'])) {
         debug( "File exists at <a href='$baseURI/".$data['path']."'>" . $data['path']."</a>");
         return $data['path'];
+    }*/
+    if(file_exists($data['path'])) {
+        unlink($data['path']);
     }
     $html =  generate_html($data);
 
