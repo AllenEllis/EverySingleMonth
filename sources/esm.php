@@ -59,7 +59,7 @@ function do_home() {
 
     echo $out;
 
-    push("Home");
+    //push("Home");
 
 }
 

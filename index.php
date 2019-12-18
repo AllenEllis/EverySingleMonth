@@ -94,13 +94,14 @@ if($action == 'doPNG') {
     echo "<hr />";
 */
 
-    if(!file_exists($PNGpath)) {
+    //if(!file_exists($PNGpath)) {
+        // Todo after reprocessing old images, I could reintroduce this cache
         // todo so much user sanitization it's not even funny
         $args = "/usr/bin/node screenshot.js " . escapeshellarg($HTMLURI) . " " . escapeshellarg($PNGpath);
         debug("Trying " . $args . " <hr />");
         exec($args, $output);
         //echo implode("\n", $output);
-    }
+    //}
 
     $PNGURI = $baseURI . "/" . $PNGpath;
     debug( "PNG saved to: <a href='$PNGURI'>$PNGpath</a><hr />
