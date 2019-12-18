@@ -96,6 +96,23 @@ function do_error($data,$title="",$message="") {
     die;
 }
 
+function do_citation() {
+    $header = file_get_contents("templates/header.html");
+    $citation = file_get_contents("templates/citation.html");
+    $footer = file_get_contents("templates/footer.html");
+
+    $ui = $header . $citation . $footer;
+
+
+    $data = array();
+
+    $ui = insert_data($data,$ui);
+
+    echo $ui;
+    push("Citation");
+    die;
+}
+
 // we are processing the user's initial input
 function do_process() {
 

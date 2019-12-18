@@ -24,6 +24,11 @@ if($action == 'process') {
 
 }
 
+if($action == 'citation') {
+    do_citation();
+    exit;
+}
+
 if($action == 'google') {
     $city = $_GET['city'];
     $data = get_data($city);

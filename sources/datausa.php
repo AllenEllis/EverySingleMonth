@@ -144,21 +144,28 @@ function call_API($query) {
 function get_meta($placeID) {
   debug("Running `get_meta`<br>");
     if(!$placeID) return FALSE;
-    $path = "cache/datausa/".$placeID.".json";
 
-    if(@file_exists($path) && @$_GET['nocache'] != 1) {
-        $result = json_decode(file_get_contents($path), true);
-        debug("Loading from cache <tt>$path</tt><br>");
+    $cachePath1 = 'cache/datausa/raw_'.$placeID.'_1.json';
+    $cachePath2 = 'cache/datausa/raw_'.$placeID.'_2.json';
+
+    if(@file_exists($cachePath1) && @file_exists($cachePath2) && @$_GET['nocache'] != 1) {
+        $data1 = file_get_contents($cachePath1);
+        $data2 = file_get_contents($cachePath2);
+        debug("Loading from cache <tt>$cachePath1</tt> and <tt>$cachePath2</tt><br>");
 
     } else {
         debug("Downloading from API <tt>$placeID</tt><br>");
-        $result = fetch_meta($placeID);
+        $data = datausa_curl($placeID);
+        $data1 = $data[0];
+        $data2 = $data[1];
     }
 
-    if(!$result) {
+    if(!$data1 || !$data2) {
       debug("Error: no metadata found");
       return false;
     }
+
+    $result = datausa_parse($data1, $data2);
 
     $town_pieces = explode(",",$result['town_full']);
 
@@ -169,10 +176,89 @@ function get_meta($placeID) {
     $result['pop']  = number_format(floatval($result['pop_raw']),0,0,",");
     $result['poverty'] = number_format(floatval($result['poverty_raw'])*100,1,".",",")."%";
 
-    $total = floatval($result['pop_raw'])*1000;
+    $total = round(floatval($result['pop_raw']))*1000;
     $total = nice_number($total);
     $result['total'] = "$" . $total;
     debug("Result is " .print_r($result,TRUE));
+    return $result;
+}
+
+function datausa_curl($placeID) {
+    $downloadURL1 = "https://datausa.io/api/data?Geography=".$placeID."&measures=Household%20Income%20by%20Race,Birthplace,Poverty%20Population&year=latest";
+    $downloadURL2 = "https://datausa.io/api/data?Geography=".$placeID."&measure=Poverty%20Population&year=latest&Poverty%20Status=0";
+    $data1 = @file_get_contents($downloadURL1);
+    $data2 = @file_get_contents($downloadURL2);
+
+    // Analyze the data for some integrity before we blindly save it to the cache
+    $data1_json = json_decode($data1, TRUE);
+
+
+    if(!isset($data1_json['data']['0']['ID Geography'])) {
+        debug("Error: datausa API did not return valid data at these URLs: <pre>$downloadURL1</pre> <pre>$downloadURL2</pre>");
+        do_error(array() ,"Server Error","Sorry, our API provider (DataUSA) is not responding at this time. Please try again later.");
+        push("Error with DataUSA",$downloadURL1);
+        return false;
+    }
+
+    debug("Received data from this URL 1: <tt>$downloadURL1</tt><pre>".print_r($data1,TRUE)."</pre><hr/>");
+    debug("Received data from this URL 2: <tt>$downloadURL2</tt><pre>".print_r($data2,TRUE)."</pre><hr/>");
+
+    $cachePath1 = 'cache/datausa/raw_'.$placeID.'_1.json';
+    $cachePath2 = 'cache/datausa/raw_'.$placeID.'_2.json';
+
+    debug("Ready to write to cache file <tt>$cachePath1</tt> the following data:<pre>$data1</pre>");
+    debug("Ready to write to cache file <tt>$cachePath2</tt> the following data:<pre>$data2</pre>");
+
+    // write data to cache
+    file_put_contents($cachePath1,$data1);
+    file_put_contents($cachePath2,$data2);
+
+    return array($data1, $data2);
+
+}
+
+function datausa_parse($data1,$data2) {
+
+    $data1 = json_decode($data1, TRUE);
+    $data2 = json_decode($data2, TRUE);
+
+    // Data USA is weird, it reports duplicate keys with varrying data
+    // So we merge them all together, and hope for the best
+
+    $data1set = array_kmerge($data1['data']);
+    $data2set = array_kmerge($data2['data']);
+
+    //$data1set = $data1['data'][$offset1];
+    //$data2set = $data2['data'][$offset2];
+
+    debug("data1set: <pre>".print_r($data1set,TRUE)."</pre>");
+    debug("data2set: <pre>".print_r($data2set,TRUE)."</pre>");
+
+    $pov_lg = $data1set['Poverty Population'];
+    $pov_sm = $data2set['Poverty Population'];
+
+    $result['id'] = $data1set['ID Geography'];
+    $result['town_full'] = $data1set['Geography'];
+    $result['slug'] = $data1set['Slug Geography'];
+    $result['year'] = $data1set['Year'];
+    $result['income_raw']  = $data1set['Household Income by Race'];
+    $result['full_pop_raw']  = $data1set['Poverty Population'];
+    if($data1set['Birthplace']) $result['full_pop_raw']  = $data1set['Birthplace']; // idk why this exists for smaller cities, but it used the be the value we used
+    $result['pop_raw']  = floor(floatval($result['full_pop_raw']))  * .714;
+    $result['poverty_raw']  = $pov_sm / $pov_lg;
+    $result['image'] = "https://datausa.io/api/profile/geo/".$result['id']."/splash";
+
+    $result['town_full'] = str_replace(" PUMA","",$result['town_full']);
+
+    $jsonResult = json_encode($result);
+
+    if($jsonResult == "") {
+        debug("Error: <tt>fetch_meta</tt> generated an empty result. Aborting.");
+        return false;
+    }
+
+
+
     return $result;
 }
 
@@ -214,7 +300,7 @@ function fetch_meta($placeID) {
     $result['income_raw']  = $data1set['Household Income by Race'];
     $result['full_pop_raw']  = $data1set['Poverty Population'];
     if($data1set['Birthplace']) $result['full_pop_raw']  = $data1set['Birthplace']; // idk why this exists for smaller cities, but it used the be the value we used
-    $result['pop_raw']  = floatval($result['full_pop_raw'])  * .875848983900403;
+    $result['pop_raw']  = floatval($result['full_pop_raw'])  * .714;
     $result['poverty_raw']  = $pov_sm / $pov_lg;
     $result['image'] = "https://datausa.io/api/profile/geo/".$result['id']."/splash";
 
@@ -227,7 +313,7 @@ function fetch_meta($placeID) {
       return false;
     }
 
-    $cachePath = 'cache/datausa/'.$placeID.'.json';
+    $cachePath = 'cache/datausa/r_'.$placeID.'.json';
 
     debug("Ready to write to cache file <tt>$cachePath</tt> the following data:<pre>$jsonResult</pre>");
     file_put_contents($cachePath,$jsonResult);
