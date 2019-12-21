@@ -4,7 +4,7 @@
 
 include("config.php");
 
-$baseURI = $_GLOBAL['baseURI'];
+global $baseURI;
 
 require('sources/datausa.php');
 require('sources/google.php');
