@@ -6,11 +6,14 @@
  * Time: 3:22 PM
  */
 
-// Rename to config.php
-
-$_GLOBAL['baseURI'] = ""; // example: https://yourwebsite
-$_GLOBAL['zenserpkey'] = ""; // API Key from zenserp
+// Rename to config.php and fill out the variables below
 
 global $zenserpkey;
+global $IPInfotoken;
+global $pushovertoken;
+global $baseURI;
 
-$zenserpkey = ""; // API Key from zenserp
+$baseURI =  "";          // example: https://yourwebsite
+$zenserpkey = "";        // API Key from Zenserp (for doing Google Image search results)
+$IPInfotoken = "";       // API Key from IP Info (for looking up IP addresses of visitors)
+$pushovertoken = "";     // API Key from Pushover (for sending push notifications of site activity)

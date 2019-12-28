@@ -210,9 +210,11 @@ function do_process() {
 
 function push($title="",$text="") {
 
-    //return;
-    $token = "0ac60c7acf80b8"; //todo move to config.php
-    //$token = "a8un8qbc4t7ccgt4pentgtcsispzqv";
+    //return
+
+    global $IPInfotoken;
+    global $pushovertoken;
+
     if($text != "") $text = $text . " | ";
 
 
@@ -225,7 +227,7 @@ function push($title="",$text="") {
     $ipi = @file_get_contents($cache_path);
     //echo "result is <pre>$queryResponseJSON</pre>";
     if(!$ipi){
-        $curl_req = "https://ipinfo.io/$ip?token=$token";
+        $curl_req = "https://ipinfo.io/$ip?token=$IPInfotoken";
         debug("This is a new IP, querying IPinfo with $curl_req");
         $ipi = @file_get_contents($curl_req);
         debug("I'm writing to " . $cache_path . " with data: <pre>$ipi</pre>");
@@ -259,8 +261,7 @@ function push($title="",$text="") {
     curl_setopt_array($ch = curl_init(), array(
         CURLOPT_URL => "https://api.pushover.net/1/messages.json",
         CURLOPT_POSTFIELDS => array(
-           // "token" => "axi4m2oh3m98f41ha2j7y6pap9cwv1",
-            "token" => "a8un8qbc4t7ccgt4pentgtcsispzqv",
+            "token" => $pushovertoken,
             "user" => "uuet8bfx4sdt7y57x8sjkhgcbrt85b",
             "title" => "ESM " . $title,
             "message" => $message //"Here We Go!\r\nIP: $ip",
