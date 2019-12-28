@@ -172,8 +172,12 @@ function do_process() {
 
 
     if(!$data) {
-        echo "<br />Error: sorry, that didn't work. When you're typing, please actually click one of the items from the autocomplete dropdown.";
-        push("Error","Code 101");
+	
+        //echo "<br />Error: sorry, that didn't work. When you're typing, please actually click one of the items from the autocomplete dropdown.";
+        push("Error","Code 101 - $city_name - ".$_SERVER['REQUEST_URI']);
+	$debug_vals = print_r($_SERVER,TRUE);
+	@file_put_contents("fatal.log",$debug_vals,FILE_APPEND);
+	do_error(array(),"Error with city","Sorry, there was an error with this city. Please try again later, or send an email to <a href='mailto:contact@everysinglemonth.org'>contact@everysinglemonth.org</a>.");
         return; // todo this all looks like it's in the wrong place. Better way of handling errors?
     }
 
@@ -200,7 +204,7 @@ function do_process() {
     $out .= $footer;
     echo $out;
 
-    push("Searched",$data['town_full']);
+    //push("Searched",$data['town_full']);
 
 }
 
@@ -208,7 +212,7 @@ function push($title="",$text="") {
 
     //return;
     $token = "0ac60c7acf80b8"; //todo move to config.php
-
+    //$token = "a8un8qbc4t7ccgt4pentgtcsispzqv";
     if($text != "") $text = $text . " | ";
 
 
@@ -255,7 +259,8 @@ function push($title="",$text="") {
     curl_setopt_array($ch = curl_init(), array(
         CURLOPT_URL => "https://api.pushover.net/1/messages.json",
         CURLOPT_POSTFIELDS => array(
-            "token" => "axi4m2oh3m98f41ha2j7y6pap9cwv1",
+           // "token" => "axi4m2oh3m98f41ha2j7y6pap9cwv1",
+            "token" => "a8un8qbc4t7ccgt4pentgtcsispzqv",
             "user" => "uuet8bfx4sdt7y57x8sjkhgcbrt85b",
             "title" => "ESM " . $title,
             "message" => $message //"Here We Go!\r\nIP: $ip",
