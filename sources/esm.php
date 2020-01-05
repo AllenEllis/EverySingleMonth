@@ -172,8 +172,12 @@ function do_process() {
 
 
     if(!$data) {
-        echo "<br />Error: sorry, that didn't work. When you're typing, please actually click one of the items from the autocomplete dropdown.";
-        push("Error","Code 101");
+	
+        //echo "<br />Error: sorry, that didn't work. When you're typing, please actually click one of the items from the autocomplete dropdown.";
+        push("Error","Code 101 - $city_name - ".$_SERVER['REQUEST_URI']);
+	$debug_vals = print_r($_SERVER,TRUE);
+	@file_put_contents("fatal.log",$debug_vals,FILE_APPEND);
+	do_error(array(),"Error with city","Sorry, there was an error with this city. Please try again later, or send an email to <a href='mailto:contact@everysinglemonth.org'>contact@everysinglemonth.org</a>.");
         return; // todo this all looks like it's in the wrong place. Better way of handling errors?
     }
 
@@ -200,7 +204,7 @@ function do_process() {
     $out .= $footer;
     echo $out;
 
-    push("Searched",$data['town_full']);
+    //push("Searched",$data['town_full']);
 
 }
 
