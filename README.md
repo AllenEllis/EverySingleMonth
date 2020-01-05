@@ -14,4 +14,4 @@ This is a simple little web app to allow users to input the name of a city, and 
 4. Run `index.php` in a web browser.
 
 ## Questions?
-This project is in active development as of December 2019. If you have any questions, feel free to open a new issue and I'll do my best to respond.
+This project is in active development as of January 2020. If you have any questions, feel free to open a new issue and I'll do my best to respond.
