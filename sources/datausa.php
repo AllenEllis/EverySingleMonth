@@ -153,6 +153,19 @@ function get_meta($placeID) {
         $data2 = file_get_contents($cachePath2);
         debug("Loading from cache <tt>$cachePath1</tt> and <tt>$cachePath2</tt><br>");
 
+        if(!$data1 || !$data2) {
+            if(!$data1) debug("Error: no metadata found for <tt>data1</tt>, even though there was a cache file. Downloading from API again.");
+            if(!$data2) debug("Error: no metadata found for <tt>data2</tt>, even though there was a cache file.  Downloading from API again.");
+
+            debug("Downloading from API <tt>$placeID</tt><br>");
+            $data = datausa_curl($placeID);
+            $data1 = $data[0];
+            $data2 = $data[1];
+
+            //return false;
+        }
+
+
     } else {
         debug("Downloading from API <tt>$placeID</tt><br>");
         $data = datausa_curl($placeID);
@@ -161,7 +174,8 @@ function get_meta($placeID) {
     }
 
     if(!$data1 || !$data2) {
-      debug("Error: no metadata found");
+        if(!$data1) debug("Error: no metadata found for <tt>data1</tt>");
+        if(!$data2) debug("Error: no metadata found for <tt>data2</tt>");
       return false;
     }
 
