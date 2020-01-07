@@ -337,6 +337,9 @@ function generate_html($data)
     $data['onlytwo_50'] = "";
     $data['onlytwo_hide'] = "";
 
+    $data['town_full'] = clean_city_name($data['town_full']);
+    $data['town_short'] = clean_city_name($data['town_short']);
+
     if(!is_positive($data['income_raw'])) {
         debug("No income data was reported -- hiding that field from the graphic");
         $data['onlytwo_50'] = "style='width: 50%'";

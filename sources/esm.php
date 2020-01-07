@@ -165,6 +165,9 @@ function do_process() {
 
     screen_city_name($data['town_full']);
 
+    $data['town_full'] = clean_city_name($data['town_full']);
+    $data['town_short'] = clean_city_name($data['town_short']);
+
     $data['MEDIAN_INCOME'] = "";
 
     if(is_positive($data['income_raw'])) {
@@ -318,6 +321,19 @@ function is_positive($int) {
     if(!is_int($int)) return false;
     if(!$int > 0) return false;
     return true;
+}
+
+function clean_city_name($city_name) {
+
+    // Fixes #11 - some city data have odd extra words that we will strip out
+
+    $city_name = str_replace((" (balance)"),"",$city_name);
+    $city_name = str_replace((" metropolitan government"),"",$city_name);
+    $city_name = str_replace((" metro government"),"",$city_name);
+    $city_name = str_replace((" unified government"),"",$city_name);
+    $city_name = trim($city_name);
+
+    return $city_name;
 }
 
 
