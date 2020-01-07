@@ -257,7 +257,7 @@ function datausa_parse($data1,$data2) {
     $result['year'] = $data1set['Year'] ?? NULL;
     $result['income_raw']  = $data1set['Household Income by Race'] ?? NULL;
     $result['full_pop_raw']  = $data1set['Poverty Population'] ?? NULL;
-    if($data1set['Birthplace']) $result['full_pop_raw']  = $data1set['Birthplace']; // idk why this exists for smaller cities, but it used the be the value we used
+    if(@$data1set['Birthplace']) $result['full_pop_raw'] = $data1set['Birthplace']; // idk why this exists for smaller cities, but it used the be the value we used
 
     if($result['full_pop_raw'] == 0 || !is_int($result['full_pop_raw'])) {
         // We don't have a valid number for population. There's no sense in continuing.

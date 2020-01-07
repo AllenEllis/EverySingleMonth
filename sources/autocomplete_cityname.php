@@ -1,43 +1,52 @@
 <?php
 
+require("esm.php");
+require("../config.php");
 
-// do the request
-function do_request($acTerm)
-{
-	$cityQueryURL = "https://datausa.io/api/search/?kind=geo&hierarchy=place&q=";
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $cityQueryURL . $acTerm);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: application/json; charset=utf-8'));
+	// do the request
+	function do_request($acTerm)
+	{
+		$cityQueryURL = "https://datausa.io/api/search/?kind=geo&hierarchy=place&q=";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $cityQueryURL . $acTerm);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: application/json; charset=utf-8'));
 
-	$queryResponseJSON = curl_exec($ch);
+		$queryResponseJSON = curl_exec($ch);
 
-	if (curl_error($ch)) {
-		print "Error info: " . curl_error($ch);
+		if (curl_error($ch)) {
+			print "Error info: " . curl_error($ch);
+		}
+
+		curl_close($ch);
+
+		$cache_path = "../cache/datausa/q_" . $acTerm . ".json";
+		#echo "I'm writing to " . $cache_path . " with data: <pre>$queryResponseJSON</pre>";
+		file_put_contents($cache_path,$queryResponseJSON);
+		#die;
+		return $queryResponseJSON;
 	}
 
-	curl_close($ch);
+	function do_cache($acTerm,$delete=FALSE){
+		$cache_path = "../cache/datausa/q_" . $acTerm . ".json";
 
-	$cache_path = "../cache/datausa/q_" . $acTerm . ".json";
-	#echo "I'm writing to " . $cache_path . " with data: <pre>$queryResponseJSON</pre>";
-	file_put_contents($cache_path,$queryResponseJSON);
-	#die;
-	return $queryResponseJSON;
-}
+		if($delete == TRUE) {
+			unlink($cache_path);
+			return false;
+		}
 
-function do_cache($acTerm){
-	$cache_path = "../cache/datausa/q_" . $acTerm . ".json";
-	//echo "loading from $cache_path<br>";
-	$queryResponseJSON = @file_get_contents($cache_path);
-	//echo "result is <pre>$queryResponseJSON</pre>";
-	if($queryResponseJSON) return $queryResponseJSON;
-	else	return false;
-}
+		$queryResponseJSON = @file_get_contents($cache_path);
 
+		if($queryResponseJSON) {
+			return $queryResponseJSON;
+		}
+		else {
+			return false;
+		}
+	}
 
-// main code here
-
+	// main code here
 
 	// if the 'term' variable is not sent with the request, exit
 	if ( !isset($_REQUEST['term']) ) {
@@ -47,16 +56,23 @@ function do_cache($acTerm){
 		$acTerm = urlencode(filter_var($acTerm, FILTER_SANITIZE_STRING));
 	}
 
-  #$acTerm = "harmony";
-
 	$acData = array();
-
 
 	// try to get a cached result
     $queryResponseJSON = do_cache($acTerm);
 
     // if false, there wasn't a cache, so do a request
     if(!$queryResponseJSON) $queryResponseJSON = do_request($acTerm);
+
+	// verify this looks like real data and not Cloudflare CAPTCHA data
+	$json = json_decode($queryResponseJSON);
+	if(is_null($json)) {
+		// We have no valid data. Delete the cache (so the next user has a chance to try again) and fail gracefully.
+		do_cache($acTerm,TRUE);
+		push("DataUSA Autocomplete Error","Searching for $acTerm");
+		debug("There was an error, deleting the cache for <tt>$acTerm</tt>");
+		return false;
+	}
 
 	// Convert to array
 	$queryResponse = json_decode($queryResponseJSON, true);

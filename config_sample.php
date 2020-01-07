@@ -8,12 +8,14 @@
 
 // Rename to config.php and fill out the variables below
 
+global $baseURI;
+global $basepath;
 global $zenserpkey;
 global $IPInfotoken;
 global $pushovertoken;
-global $baseURI;
 
 $baseURI =  "";          // example: https://yourwebsite
+$basepath = "";          // filesystem path (no trailing slash necessary)
 $zenserpkey = "";        // API Key from Zenserp (for doing Google Image search results)
 $IPInfotoken = "";       // API Key from IP Info (for looking up IP addresses of visitors)
 $pushovertoken = "";     // API Key from Pushover (for sending push notifications of site activity)

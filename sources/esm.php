@@ -223,6 +223,7 @@ function push($title="",$text="") {
 
     global $IPInfotoken;
     global $pushovertoken;
+    global $basepath;
 
     if($text != "") $text = $text . " | ";
 
@@ -230,8 +231,10 @@ function push($title="",$text="") {
     if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP']; // get Cloudflare original IPs
     $ip = $_SERVER['REMOTE_ADDR'];
 
+
     // check the cache
-    $cache_path = "cache/ipinfo/" . urlencode($ip) . ".json";
+    $cache_path = $basepath . "/cache/ipinfo/" . urlencode($ip) . ".json";
+
     //echo "loading from $cache_path<br>";
     $ipi = @file_get_contents($cache_path);
     //echo "result is <pre>$queryResponseJSON</pre>";
