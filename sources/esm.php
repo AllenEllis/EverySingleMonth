@@ -152,6 +152,8 @@ function do_process() {
 
     }
 
+
+
     $ui_header = file_get_contents("templates/header.html");;
     $ui_header = str_replace("{CITY}",$city,$ui_header);
 
@@ -160,6 +162,8 @@ function do_process() {
     $out .= $ui_header;
 
     $data = get_data($city);
+
+    screen_city_name($data['town_full']);
 
     $data['MEDIAN_INCOME'] = "";
 
@@ -313,5 +317,41 @@ function hash_image($image) {
 function is_positive($int) {
     if(!is_int($int)) return false;
     if(!$int > 0) return false;
+    return true;
+}
+
+
+function screen_city_name($city_name) {
+
+    debug("Starting to screen <tt>$city_name</tt>");
+    $blacklist = array(
+        "Intercourse, PA",
+        "Cool, TX",
+        "Three Way, TN",
+        "Buttzville, NJ",
+        "Licking, MO",
+        "Cash, AR",
+        "Forks, WA",
+        "China, TX",
+        "Russia, OH",
+        "Success, AR",
+        "Tea, SD",
+        "Hooker, OK",
+        "Chicken, AR",
+        "Santa Claus, IN",
+        "Sextonville, WI",
+        "Sexton, IA",
+        "Hookerton, NC",
+
+    );
+
+    foreach($blacklist as $item) {
+        if($city_name == $item) {
+            do_error(array(),"No town found","Sorry, we could not find a town named <strong>$city_name</strong>.");
+            return false;
+        }
+    }
+
+    debug("Screen complete");
     return true;
 }
