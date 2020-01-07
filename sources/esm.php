@@ -331,6 +331,7 @@ function clean_city_name($city_name) {
     $city_name = str_replace((" metropolitan government"),"",$city_name);
     $city_name = str_replace((" metro government"),"",$city_name);
     $city_name = str_replace((" unified government"),"",$city_name);
+    $city_name = str_replace((" consolidated government"),"",$city_name);
     $city_name = trim($city_name);
 
     return $city_name;
@@ -358,6 +359,10 @@ function screen_city_name($city_name) {
         "Sextonville, WI",
         "Sexton, IA",
         "Hookerton, NC",
+        "Sandwich, IL",
+        "Sandwich, MA",
+        "Cumming, IA",
+        "Cumming, GA",
 
     );
 
