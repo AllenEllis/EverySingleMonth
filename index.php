@@ -321,6 +321,7 @@ function generate_html($data)
 
     $html = file_get_contents("templates/render.html");
 
+    /*
     $image = $data['image'];
     $town_full = $data['town_full'];
     $pop = $data['pop'];
@@ -328,10 +329,22 @@ function generate_html($data)
     $poverty = $data['poverty'];
     $total = $data['total'];
     $town_short = $data['town_short'];
+    */
 
-    $legibilityURL = $baseURI . "/static/legibility.png";
-    $logoURL = $baseURI . "/static/logo.png";
 
+    $data['legibilityURL'] = $baseURI . "/static/legibility.png";
+    $data['logoURL'] = $baseURI . "/static/logo.png";
+    $data['onlytwo_50'] = "";
+    $data['onlytwo_hide'] = "";
+
+    if(!is_positive($data['income_raw'])) {
+        debug("No income data was reported -- hiding that field from the graphic");
+        $data['onlytwo_50'] = "style='width: 50%'";
+        $data['onlytwo_hide'] = "style='display: none'";
+    }
+
+    $html = insert_data($data,$html);
+/*
 
     $html = str_replace("{IMAGE}", $image, $html);
     $html = str_replace("{TOWN_FULL}", $town_full, $html);
@@ -341,7 +354,7 @@ function generate_html($data)
     $html = str_replace("{TOTAL}", $total, $html);
     $html = str_replace("{TOWN_SHORT}", $town_short, $html);
     $html = str_replace("{LOGOURL}", $logoURL, $html);
-    $html = str_replace("{LEGIBILITYURL}", $legibilityURL, $html);
+    $html = str_replace("{LEGIBILITYURL}", $legibilityURL, $html);*/
 
     return $html;
 

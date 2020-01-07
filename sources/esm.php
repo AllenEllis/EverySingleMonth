@@ -159,10 +159,18 @@ function do_process() {
 
     $out .= $ui_header;
 
-
-
-
     $data = get_data($city);
+
+    $data['MEDIAN_INCOME'] = "";
+
+    if(is_positive($data['income_raw'])) {
+        // Only generate median income data if it exists
+        $data['MEDIAN_INCOME'] = file_get_contents("templates/generated_median_income.html");
+        $data['MEDIAN_INCOME'] = insert_data(array("income" => $data['income']), $data['MEDIAN_INCOME']);
+    }
+    else {
+        debug("There was no median income data available (".$data['income_raw']."), so not populating that field");
+    }
 
 
 
@@ -295,4 +303,12 @@ function hash_image($image) {
     $out = substr(md5($image),0,6);
     //echo "I took $image and made $out";
     return $out;
+}
+
+
+
+function is_positive($int) {
+    if(!is_int($int)) return false;
+    if(!$int > 0) return false;
+    return true;
 }
