@@ -209,7 +209,7 @@ function datausa_curl($placeID) {
 
     if(!isset($data1_json['data']['0']['ID Geography'])) {
         debug("Error: datausa API did not return valid data at these URLs: <pre>$downloadURL1</pre> <pre>$downloadURL2</pre>");
-        do_error(array() ,"Server Error","Sorry, our API provider (DataUSA) is not responding at this time. Please try again later.");
+        do_error(array() ,"Server Error","Sorry, our API provider (DataUSA) is not responding at this time. Please try again later.","503");
         push("Error with DataUSA",$downloadURL1);
         return false;
     }
@@ -248,18 +248,26 @@ function datausa_parse($data1,$data2) {
     debug("data1set: <pre>".print_r($data1set,TRUE)."</pre>");
     debug("data2set: <pre>".print_r($data2set,TRUE)."</pre>");
 
-    $pov_lg = $data1set['Poverty Population'];
-    $pov_sm = $data2set['Poverty Population'];
+    $pov_lg = $data1set['Poverty Population']; // This is the "total population". Very confusing on DataUSA's part
+    $pov_sm = $data2set['Poverty Population']; // This is the "poverty population". We have to divide these two to get ratio
 
-    $result['id'] = $data1set['ID Geography'];
-    $result['town_full'] = $data1set['Geography'];
-    $result['slug'] = $data1set['Slug Geography'];
-    $result['year'] = $data1set['Year'];
-    $result['income_raw']  = $data1set['Household Income by Race'];
-    $result['full_pop_raw']  = $data1set['Poverty Population'];
+    $result['id'] = $data1set['ID Geography'] ?? NULL;
+    $result['town_full'] = $data1set['Geography'] ?? NULL;
+    $result['slug'] = $data1set['Slug Geography'] ?? NULL;
+    $result['year'] = $data1set['Year'] ?? NULL;
+    $result['income_raw']  = $data1set['Household Income by Race'] ?? NULL;
+    $result['full_pop_raw']  = $data1set['Poverty Population'] ?? NULL;
     if($data1set['Birthplace']) $result['full_pop_raw']  = $data1set['Birthplace']; // idk why this exists for smaller cities, but it used the be the value we used
+
+    if($result['full_pop_raw'] == 0 || !is_int($result['full_pop_raw'])) {
+        // We don't have a valid number for population. There's no sense in continuing.
+        do_error($result,"No population information found","Sorry, we could not determine the population for <strong>".$result['town_full']."</strong>","410");
+    }
     $result['pop_raw']  = floor(floatval($result['full_pop_raw']))  * .714;
-    $result['poverty_raw']  = $pov_sm / $pov_lg;
+
+    if(!$pov_sm > 0) $result['poverty_raw'] = 0;
+    else             $result['poverty_raw']  = $pov_sm / $pov_lg;
+
     $result['image'] = "https://datausa.io/api/profile/geo/".$result['id']."/splash";
 
     $result['town_full'] = str_replace(" PUMA","",$result['town_full']);
@@ -267,7 +275,7 @@ function datausa_parse($data1,$data2) {
     $jsonResult = json_encode($result);
 
     if($jsonResult == "") {
-        debug("Error: <tt>fetch_meta</tt> generated an empty result. Aborting.");
+        debug("Error: <tt>datausa_parse()</tt> generated an empty result. Aborting.");
         return false;
     }
 
@@ -276,65 +284,6 @@ function datausa_parse($data1,$data2) {
     return $result;
 }
 
-function fetch_meta($placeID) {
-
-    $downloadURL1 = "https://datausa.io/api/data?Geography=".$placeID."&measures=Household%20Income%20by%20Race,Birthplace,Poverty%20Population&year=latest";
-    $downloadURL2 = "https://datausa.io/api/data?Geography=".$placeID."&measure=Poverty%20Population&year=latest&Poverty%20Status=0";
-    $data1 = json_decode(@file_get_contents($downloadURL1),TRUE);
-    $data2 = json_decode(@file_get_contents($downloadURL2),TRUE);
-
-    if(!isset($data1['data']['0']['ID Geography'])) {
-      debug("Error: datausa API did not return any data for placeID $placeID");
-      return false;
-    }
-
-    debug("Received data from this URL 1: <tt>$downloadURL1</tt><pre>".print_r($data1,TRUE)."</pre><hr/>");
-    debug("Received data from this URL 2: <tt>$downloadURL2</tt><pre>".print_r($data2,TRUE)."</pre><hr/>");
-
-    // Data USA is weird, it reports duplicate keys with varrying data
-    // So we merge them all together, and hope for the best
-
-    $data1set = array_kmerge($data1['data']);
-    $data2set = array_kmerge($data2['data']);
-
-    //$data1set = $data1['data'][$offset1];
-    //$data2set = $data2['data'][$offset2];
-
-    debug("data1set: <pre>".print_r($data1set,TRUE)."</pre>");
-    debug("data2set: <pre>".print_r($data2set,TRUE)."</pre>");
-
-
-    $pov_lg = $data1set['Poverty Population'];
-    $pov_sm = $data2set['Poverty Population'];
-
-    $result['id'] = $data1set['ID Geography'];
-    $result['town_full'] = $data1set['Geography'];
-    $result['slug'] = $data1set['Slug Geography'];
-    $result['year'] = $data1set['Year'];
-    $result['income_raw']  = $data1set['Household Income by Race'];
-    $result['full_pop_raw']  = $data1set['Poverty Population'];
-    if($data1set['Birthplace']) $result['full_pop_raw']  = $data1set['Birthplace']; // idk why this exists for smaller cities, but it used the be the value we used
-    $result['pop_raw']  = floatval($result['full_pop_raw'])  * .714;
-    $result['poverty_raw']  = $pov_sm / $pov_lg;
-    $result['image'] = "https://datausa.io/api/profile/geo/".$result['id']."/splash";
-
-    $result['town_full'] = str_replace(" PUMA","",$result['town_full']);
-
-    $jsonResult = json_encode($result);
-
-    if($jsonResult == "") {
-      debug("Error: <tt>fetch_meta</tt> generated an empty result. Aborting.");
-      return false;
-    }
-
-    $cachePath = 'cache/datausa/r_'.$placeID.'.json';
-
-    debug("Ready to write to cache file <tt>$cachePath</tt> the following data:<pre>$jsonResult</pre>");
-    file_put_contents($cachePath,$jsonResult);
-
-    return $result;
-
-}
 
 
 function nice_number($n) {

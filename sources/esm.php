@@ -79,7 +79,7 @@ function insert_data($data, $HTML) {
 }
 
 
-function do_error($data,$title="",$message="") {
+function do_error($data,$title="",$message="",$code="404") {
     $header = file_get_contents("templates/header.html");
     $errorpage = file_get_contents("templates/error.html");
     $footer = file_get_contents("templates/footer.html");
@@ -88,6 +88,7 @@ function do_error($data,$title="",$message="") {
 
     if(@$title) $data['ERROR_TITLE'] = $title;
     if(@$message) $data['ERROR_MESSAGE'] = $message;
+    if(@$code) $data['CODE'] = $code;
 
     $ui = insert_data($data,$ui);
 
