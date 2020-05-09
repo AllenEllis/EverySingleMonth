@@ -35,15 +35,19 @@ function generate_gallery() {
 
 function do_home() {
     global $googleAnalyticsId;
+    global $fbAppId;
 
     $error = "";
     if(@$_GET['error'] == 'nocity') $error = "<p class=\"text-danger\">Sorry, the city you entered had no matches.</p>";
 
     $out = "";
-    $ui_header = file_get_contents("templates/header.html");;
+    $ui_header = file_get_contents("templates/header.html");
+    $ui_header = str_replace("{OG_IMAGE}", DEFAULT_SPLASH_IMG_URL, $ui_header);
+    $ui_header = str_replace("{FB_APP_ID}", $fbAppId, $ui_header);
     $ui_header = insert_data(array(),$ui_header);
     $out .= $ui_header;
     $ui = file_get_contents("templates/home.html");
+    $ui = str_replace("{SPLASH_IMG}", DEFAULT_SPLASH_IMG_URL, $ui);
 
     $data['city'] = '';
     $data['city_name'] = '';
@@ -122,10 +126,12 @@ function do_citation() {
 function do_process() {
     global $baseURI;
     global $googleAnalyticsId;
+    global $fbAppId;
 
     $out = "";
     $city = get_param('city');
     $city_name = get_param('city_name');
+    $data = get_data($city);
 
     if(!$city) {
 
@@ -155,15 +161,18 @@ function do_process() {
     }
 
 
+    // dynamically set "og:image" used to represent the URL when Facebook sharing
+    $ogImage = $data['image'] ? $data['image'] : $baseURI . DEFAULT_SPLASH_IMG_URL;
 
-    $ui_header = file_get_contents("templates/header.html");;
+    $ui_header = file_get_contents("templates/header.html");
+    $ui_header = str_replace("{BASEURI}", $baseURI, $ui_header);
     $ui_header = str_replace("{CITY}",$city,$ui_header);
+    $ui_header = str_replace("{OG_IMAGE}", $ogImage, $ui_header);
+    $ui_header = str_replace("{FB_APP_ID}", $fbAppId, $ui_header);
 
     if(@$_GET['debug'] == 1) $debug = "1"; else $debug="0";
 
     $out .= $ui_header;
-
-    $data = get_data($city);
 
     screen_city_name($data['town_full']);
 
@@ -228,12 +237,14 @@ function do_process() {
 }
 
 function push($title="",$text="") {
-
-    //return
-
     global $IPInfotoken;
     global $pushovertoken;
+    global $isPushEnabled;
     global $basepath;
+
+    if(!$isPushEnabled) {
+      return;
+    }
 
     if($text != "") $text = $text . " | ";
 

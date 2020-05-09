@@ -311,7 +311,7 @@ function nice_number($n) {
 function array_kmerge ($array) {
   $start = 0;
 reset($array);
-while ($tmp = each($array))
+while ($tmp = @each($array))
 {
   if(count($tmp['value']) > 0)
   {
