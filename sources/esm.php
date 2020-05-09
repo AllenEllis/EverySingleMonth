@@ -34,7 +34,7 @@ function generate_gallery() {
 
 
 function do_home() {
-
+    global $googleAnalyticsId;
 
     $error = "";
     if(@$_GET['error'] == 'nocity') $error = "<p class=\"text-danger\">Sorry, the city you entered had no matches.</p>";
@@ -55,12 +55,10 @@ function do_home() {
     $out .= $ui;
 
     $footer = file_get_contents("templates/footer.html");
+    $footer = str_replace("{GOOGLE_ANALYTICS_ID}", $googleAnalyticsId, $footer);
     $out .= $footer;
 
     echo $out;
-
-    //push("Home");
-
 }
 
 
@@ -80,9 +78,12 @@ function insert_data($data, $HTML) {
 
 
 function do_error($data,$title="",$message="",$code="404") {
+    global $googleAnalyticsId;
+
     $header = file_get_contents("templates/header.html");
     $errorpage = file_get_contents("templates/error.html");
     $footer = file_get_contents("templates/footer.html");
+    $footer = str_replace("{GOOGLE_ANALYTICS_ID}", $googleAnalyticsId, $footer);
 
     $ui = $header . $errorpage . $footer;
 
@@ -98,9 +99,12 @@ function do_error($data,$title="",$message="",$code="404") {
 }
 
 function do_citation() {
+    global $googleAnalyticsId;
+
     $header = file_get_contents("templates/header.html");
     $citation = file_get_contents("templates/citation.html");
     $footer = file_get_contents("templates/footer.html");
+    $footer = str_replace("{GOOGLE_ANALYTICS_ID}", $googleAnalyticsId, $footer);
 
     $ui = $header . $citation . $footer;
 
@@ -116,10 +120,8 @@ function do_citation() {
 
 // we are processing the user's initial input
 function do_process() {
-
-
     global $baseURI;
-
+    global $googleAnalyticsId;
 
     $out = "";
     $city = get_param('city');
@@ -188,7 +190,7 @@ function do_process() {
 
 
     if(!$data) {
-	
+
         //echo "<br />Error: sorry, that didn't work. When you're typing, please actually click one of the items from the autocomplete dropdown.";
         push("Error","Code 101 - $city_name - ".$_SERVER['REQUEST_URI']);
 	$debug_vals = print_r($_SERVER,TRUE);
@@ -217,6 +219,7 @@ function do_process() {
     //$googleimages = getAPIresult('googleimages',$city);
 
     $footer = file_get_contents("templates/footer.html");
+    $footer = str_replace("{GOOGLE_ANALYTICS_ID}", $googleAnalyticsId, $footer);
     $out .= $footer;
     echo $out;
 
