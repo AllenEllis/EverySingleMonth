@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+  <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="author" content="Every Single Month" />
     <meta name="description" content="The Freedom Dividend would transform towns across America by giving every adult $1,000/mo. See how this would impact your community.">
-    <meta property="og:description" content="The Freedom Dividend would transform towns across America by giving every adult $1,000/mo. See how this would impact your community.">
-    <meta property="og:image" content="{BASEURI}/static/images/seth-dewey-EOlo15oy8Ks-unsplash-1920.jpg" />
 
 
     <meta name="twitter:card" content="summary" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="{BASEURI}" />
     <meta property="og:title" content="Every Single Month" />
     <meta property="og:description" content="The Freedom Dividend would transform towns across America by giving every adult $1,000/mo. See how this would impact your community." />
-    <meta property="og:image" content="{BASEURI}/static/images/seth-dewey-EOlo15oy8Ks-unsplash-1920.jpg" />
+    <meta property="og:image" content="{OG_IMAGE}" />
 
 
     <link rel="shortcut icon" href="{BASEURI}/static/images/favicon.ico" />
@@ -193,8 +190,14 @@
             return Promise.resolve("Dummy response to keep the console quiet");
         }
 
-        function updateBGUser(imgSrc) {
-
+        function onFbShareClick() {
+          if (!FB) { return; }
+          FB.ui({
+            display: 'popup',
+            method: 'share',
+            href: window.location.href,
+            // quote: '', <- Set to populate initial text
+          }, function (response) { });
         }
 
 
@@ -207,6 +210,11 @@
 </head>
 
 <body>
+
+<!-- FB JS SDK -->
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&autoLogAppEvents=1&version=v7.0&appId={FB_APP_ID}"></script>
+
 <!-- Body Inner -->
 <div class="body-inner">
     <!-- Header -->

@@ -9,6 +9,7 @@ global $baseURI;
 require('sources/datausa.php');
 require('sources/google.php');
 require('sources/esm.php');
+require('utils/constants.php');
 
 $action = @$_GET['action'];
 
@@ -69,6 +70,7 @@ if($action == 'doPNG') {
 
 
     global $baseURI;
+    global $nodeExecPath;
 
     $id = $_GET['id']; //todo: sanitize input
     $src = $_GET['src'];
@@ -99,7 +101,7 @@ if($action == 'doPNG') {
     }
 
         // todo so much user sanitization it's not even funny
-        $args = "/usr/bin/node screenshot.js " . escapeshellarg($HTMLURI) . " " . escapeshellarg($PNGpath);
+        $args = $nodeExecPath . " screenshot.js " . escapeshellarg($HTMLURI) . " " . escapeshellarg($PNGpath);
         debug("Trying " . $args . " <hr />");
         exec($args, $output);
         //echo implode("\n", $output);
