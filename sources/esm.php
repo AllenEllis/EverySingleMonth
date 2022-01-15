@@ -60,6 +60,8 @@ function do_home() {
 
     $footer = file_get_contents("templates/footer.html");
     $footer = str_replace("{GOOGLE_ANALYTICS_ID}", $googleAnalyticsId, $footer);
+    $footer = str_replace("{GOOGLE_ANALYTICS_ID}", $googleAnalyticsId, $footer);
+    $footer = str_replace("{YEAR}", date("Y"), $footer);
     $out .= $footer;
 
     echo $out;
@@ -124,6 +126,7 @@ function do_citation() {
 
 // we are processing the user's initial input
 function do_process() {
+
     global $baseURI;
     global $googleAnalyticsId;
     global $fbAppId;
@@ -159,8 +162,6 @@ function do_process() {
         }
 
     }
-
-
     // dynamically set "og:image" used to represent the URL when Facebook sharing
     $ogImage = $data['image'] ? $data['image'] : $baseURI . DEFAULT_SPLASH_IMG_URL;
 
